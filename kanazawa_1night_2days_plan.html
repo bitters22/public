@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>金沢 1泊2日 旅行プラン</title>
+  <style>
+    :root{
+      --bg:#f7f4ef;
+      --card:#ffffff;
+      --ink:#2d2926;
+      --muted:#756f69;
+      --accent:#a23b4a;
+      --accent-soft:#f5e5e8;
+      --gold:#b58a46;
+      --line:#e8dfd4;
+      --green:#446c5c;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+      line-height:1.75;
+    }
+    .hero{
+      padding:56px 20px 44px;
+      background:linear-gradient(135deg,#efe7dc 0%,#f9f6f1 55%,#f1e2e5 100%);
+      border-bottom:1px solid var(--line);
+    }
+    .wrap{max-width:980px;margin:0 auto}
+    .eyebrow{
+      display:inline-block;
+      font-size:13px;
+      letter-spacing:.13em;
+      color:var(--accent);
+      font-weight:700;
+      margin-bottom:12px;
+    }
+    h1{
+      margin:0;
+      font-size:clamp(32px,6vw,56px);
+      line-height:1.15;
+      letter-spacing:-.03em;
+    }
+    .lead{
+      max-width:760px;
+      margin:18px 0 0;
+      color:var(--muted);
+      font-size:17px;
+    }
+    main{padding:34px 20px 70px}
+    .summary{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin-bottom:28px;
+    }
+    .summary div{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+    }
+    .summary b{display:block;font-size:14px;color:var(--muted);margin-bottom:4px}
+    .summary span{font-weight:700}
+    .day{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:28px;
+      margin:20px 0;
+      box-shadow:0 10px 30px rgba(69,49,32,.04);
+    }
+    .dayhead{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:16px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:16px;
+      margin-bottom:18px;
+    }
+    .day h2{margin:0;font-size:28px}
+    .daytag{
+      font-size:13px;
+      color:var(--accent);
+      background:var(--accent-soft);
+      border-radius:999px;
+      padding:7px 11px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .timeline{list-style:none;margin:0;padding:0}
+    .timeline li{
+      position:relative;
+      display:grid;
+      grid-template-columns:90px 1fr;
+      gap:18px;
+      padding:14px 0 16px 20px;
+      border-left:2px solid var(--line);
+      margin-left:7px;
+    }
+    .timeline li:before{
+      content:"";
+      position:absolute;
+      width:12px;height:12px;border-radius:50%;
+      background:var(--accent);
+      left:-7px;top:21px;
+      box-shadow:0 0 0 5px #fff;
+    }
+    .time{
+      font-weight:800;
+      color:var(--accent);
+      font-size:15px;
+    }
+    .spot strong{
+      display:block;
+      font-size:18px;
+      margin-bottom:2px;
+    }
+    .spot p{margin:0;color:var(--muted);font-size:14px}
+    .foodgrid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin-top:18px;
+    }
+    .food{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+      background:#fffdfa;
+    }
+    .food h3{margin:0 0 7px;font-size:18px}
+    .food p{margin:0;color:var(--muted);font-size:14px}
+
+    .spot-media{
+      margin-top:12px;
+      width:100%;
+      max-width:520px;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      background:#eee8e1;
+    }
+    .spot-media img{
+      display:block;
+      width:100%;
+      height:210px;
+      object-fit:cover;
+    }
+    .spot-media figcaption{
+      padding:7px 10px;
+      font-size:11px;
+      line-height:1.4;
+      color:#8a827a;
+      background:#fffdfa;
+    }
+    .route-option{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:12px;
+      background:#faf5ee;
+      border:1px solid #eadcca;
+    }
+    .route-option b{
+      color:var(--gold);
+    }
+    .warning{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-top:9px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#fff0ed;
+      color:#a23b4a;
+      border:1px solid #f0cec9;
+      font-size:12px;
+      font-weight:800;
+    }
+    .photo-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin-top:20px;
+    }
+    .photo-card{
+      overflow:hidden;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:#fffdfa;
+    }
+    .photo-card img{
+      display:block;
+      width:100%;
+      height:170px;
+      object-fit:cover;
+    }
+    .photo-card div{
+      padding:12px 14px 14px;
+    }
+    .photo-card strong{
+      display:block;
+      margin-bottom:3px;
+    }
+    .photo-card small{
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .note{
+      margin-top:24px;
+      padding:18px 20px;
+      border-radius:16px;
+      background:#edf3ef;
+      border:1px solid #d9e6df;
+    }
+    .note b{color:var(--green)}
+    .choices{
+      margin-top:20px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+    .choice{
+      padding:18px;
+      background:#faf7f2;
+      border:1px solid var(--line);
+      border-radius:16px;
+    }
+    .choice h3{margin:0 0 5px;font-size:17px}
+    .choice p{margin:0;color:var(--muted);font-size:14px}
+    footer{
+      margin-top:34px;
+      color:var(--muted);
+      font-size:13px;
+      text-align:center;
+    }
+    @media(max-width:720px){
+      .summary{grid-template-columns:1fr 1fr}
+      .foodgrid,.choices,.photo-grid{grid-template-columns:1fr}
+      .day{padding:22px 18px}
+      .spot-media img{height:180px}
+      .timeline li{grid-template-columns:72px 1fr;gap:12px}
+      .dayhead{align-items:flex-start;flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="eyebrow">KANAZAWA / 1 NIGHT 2 DAYS</div>
+      <h1>金沢 1泊2日<br>ゆっくり楽しむ旅行プラン</h1>
+      <p class="lead">
+        王道の観光地はしっかり押さえつつ、寿司・香箱ガニ・バーも楽しむ。
+        詰め込みすぎず、金沢らしい時間を味わう1泊2日。
+      </p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="summary">
+      <div><b>観光</b><span>近江町・茶屋街・兼六園・21美</span></div>
+      <div><b>寿司</b><span>もりもり / まいもん / 松の</span></div>
+      <div><b>カニ</b><span>香箱ガニの甲羅盛り</span></div>
+      <div><b>夜</b><span>一葉 / SOLO</span></div>
+    </section>
+
+    <section class="day">
+      <div class="dayhead">
+        <div>
+          <div class="eyebrow">DAY 1</div>
+          <h2>市場と茶屋街、夜の金沢</h2>
+        </div>
+        <div class="daytag">街歩き＋食＋バー</div>
+      </div>
+
+      <ul class="timeline">
+        <li>
+          <div class="time">昼</div>
+          <div class="spot">
+            <strong>金沢到着 → 寿司</strong>
+            <p>駅近なら「もりもり寿し 金沢駅前店」が使いやすい。到着時間によっては、まいもん寿司を別枠にしてもOK。</p>
+            <figure class="spot-media">
+              <img src="https://www.kanazawa-kankoukyoukai.or.jp/lsc/upfile/spot/0001/0050/10050_5_l.jpg" alt="金沢駅 鼓門" loading="lazy">
+              <figcaption>金沢駅・鼓門　Photo: 金沢市観光協会</figcaption>
+            </figure>
+          </div>
+        </li>
+        <li>
+          <div class="time">午後</div>
+          <div class="spot">
+            <strong>近江町市場</strong>
+            <p>海鮮や金沢らしい食材を見ながら散策。食べすぎず、つまむ程度でも十分。</p>
+            <figure class="spot-media">
+              <img src="https://www.kanazawa-kankoukyoukai.or.jp/lsc/upfile/spot/0001/0030/10030_1_l.jpg" alt="近江町市場" loading="lazy">
+              <figcaption>近江町市場　Photo: 金沢市観光協会</figcaption>
+            </figure>
+          </div>
+        </li>
+        <li>
+          <div class="time">15:30頃</div>
+          <div class="spot">
+            <strong>ひがし茶屋街</strong>
+            <p>町家や街並みをゆっくり散策。夕暮れから夜へ変わっていく雰囲気も楽しむ。</p>
+            <figure class="spot-media">
+              <img src="https://www.kanazawa-kankoukyoukai.or.jp/lsc/upfile/spot/0001/0212/10212_5_l.jpg" alt="夕暮れのひがし茶屋街" loading="lazy">
+              <figcaption>夕暮れのひがし茶屋街　Photo: 金沢市観光協会</figcaption>
+            </figure>
+          </div>
+        </li>
+        <li>
+          <div class="time">17:00頃</div>
+          <div class="spot">
+            <strong>夕食｜茶屋街周辺を第一候補</strong>
+            <p>刺身、のどぐろ、加賀料理など。香箱ガニの時期なら、身をほぐした「甲羅盛り」があればぜひ。</p>
+            <div class="route-option">
+              <b>PLAN A</b>　ひがし茶屋街・主計町周辺で夕食<br>
+              <b>PLAN B</b>　店が取りづらい・良さそうな店がなければ、いったん金沢駅へ戻って駅周辺で夕食
+            </div>
+            <figure class="spot-media">
+              <img src="https://thepursuitoffoodperfection.files.wordpress.com/2019/06/mekumi_kobakogani_1.jpg?h=768&w=1024" alt="身をほぐした香箱ガニ" loading="lazy">
+              <figcaption>イメージ：香箱ガニを食べやすく盛ったもの</figcaption>
+            </figure>
+          </div>
+        </li>
+        <li>
+          <div class="time">19:00</div>
+          <div class="spot">
+            <strong>Bar 一葉</strong>
+            <p>茶屋街周辺で夕食を取れた場合は、そのまま主計町へ。19:00オープン。駅周辺で夕食にした場合は、戻ってくるかは当日の気分で。</p>
+            <figure class="spot-media">
+              <img src="https://www.kanazawa-kankoukyoukai.or.jp/lsc/upfile/spot/0005/2358/52358_9_l.jpg?1773620225=" alt="夜の主計町茶屋街" loading="lazy">
+              <figcaption>一葉のある主計町茶屋街の夜　Photo: 金沢市観光協会</figcaption>
+            </figure>
+          </div>
+        </li>
+        <li>
+          <div class="time">夜</div>
+          <div class="spot">
+            <strong>SOLO｜駅近のカフェ＆バー</strong>
+            <p>夜の2軒目でも、2日目のカフェ利用でもよい。金沢駅西口から近いので、旅程の最後に組み込みやすい。</p>
+            <span class="warning">⚠ SOLOは22:00閉店</span>
+            <p style="margin-top:8px">一葉のあとに寄るなら長居しすぎない。無理に1日目へ入れず、2日目の帰りにカフェとして使うのもあり。</p>
+            <figure class="spot-media">
+              <img src="https://tblg.k-img.com/restaurant/images/Rvw/229264/640x640_rect_6403e219587789be628a6f19e57923f5.jpg" alt="SOLO 金沢の店内" loading="lazy">
+              <figcaption>SOLO 店内イメージ　Source: 食べログ掲載写真</figcaption>
+            </figure>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <section class="day">
+      <div class="dayhead">
+        <div>
+          <div class="eyebrow">DAY 2</div>
+          <h2>松の → 兼六園 → 21世紀美術館</h2>
+        </div>
+        <div class="daytag">少しゆっくりスタート</div>
+      </div>
+
+      <ul class="timeline">
+        <li>
+          <div class="time">9:30</div>
+          <div class="spot">
+            <strong>ホテルをチェックアウト</strong>
+            <p>朝はゆっくりめ。ホテルが金沢駅周辺なら、そのまま七尾線で宇野気方面へ。</p>
+          </div>
+        </li>
+        <li>
+          <div class="time">10:30頃</div>
+          <div class="spot">
+            <strong>宇野気「寿司処 松の」</strong>
+            <p>2日目のメイン。開店時間に合わせて到着するイメージ。朝食は軽めにしておく。曜日によって開店時間が異なるため、旅行日確定後に最終確認。</p>
+            <figure class="spot-media">
+              <img src="https://matsuno.main.jp/images/tmb_tokujyo.jpg" alt="寿司処 松のの寿司" loading="lazy">
+              <figcaption>寿司処 松の　Photo: 店舗公式サイト</figcaption>
+            </figure>
+          </div>
+        </li>
+        <li>
+          <div class="time">12:00頃</div>
+          <div class="spot">
+            <strong>金沢市内へ戻る</strong>
+            <p>宇野気から金沢へ戻り、そのまま兼六園方面へ移動。</p>
+          </div>
+        </li>
+        <li>
+          <div class="time">13:00頃</div>
+          <div class="spot">
+            <strong>兼六園</strong>
+            <p>約1〜1.5時間。時間と体力に余裕があれば金沢城公園を少し見るのもあり。</p>
+            <figure class="spot-media">
+              <img src="https://www.kanazawa-kankoukyoukai.or.jp/lsc/upfile/spot/0001/0106/10106_9_l.jpg?1772610649=" alt="兼六園" loading="lazy">
+              <figcaption>兼六園　Photo: 金沢市観光協会</figcaption>
+            </figure>
+          </div>
+        </li>
+        <li>
+          <div class="time">14:30頃</div>
+          <div class="spot">
+            <strong>金沢21世紀美術館</strong>
+            <p>兼六園から徒歩ですぐ。1.5〜2時間を目安にゆっくり見る。</p>
+            <figure class="spot-media">
+              <img src="https://www.kanazawa-kankoukyoukai.or.jp/lsc/upfile/spot/0001/0066/10066_9_l.jpg" alt="金沢21世紀美術館 スイミング・プール" loading="lazy">
+              <figcaption>金沢21世紀美術館　Photo: 金沢市観光協会</figcaption>
+            </figure>
+          </div>
+        </li>
+        <li>
+          <div class="time">16:30頃</div>
+          <div class="spot">
+            <strong>金沢駅へ</strong>
+            <p>新幹線まで余裕があれば、SOLOでコーヒーを飲んで締めるのもよい。SOLO利用時は22:00閉店に注意。</p>
+            <figure class="spot-media">
+              <img src="https://www.kanazawa-kankoukyoukai.or.jp/lsc/upfile/spot/0001/0050/10050_5_l.jpg" alt="金沢駅 鼓門" loading="lazy">
+              <figcaption>金沢駅・鼓門　Photo: 金沢市観光協会</figcaption>
+            </figure>
+          </div>
+        </li>
+      </ul>
+
+      <div class="note">
+        <b>ポイント：</b>
+        9:30チェックアウトを基本に、旅行日の「松の」の開店時間と七尾線の時刻を見て微調整する。
+        平日・土日祝で営業時間が変わる可能性があるため、日程確定後に最終版へ更新する。
+      </div>
+    </section>
+
+    <section class="day">
+      <div class="dayhead">
+        <div>
+          <div class="eyebrow">FOOD & DRINK</div>
+          <h2>今回食べたいもの</h2>
+        </div>
+      </div>
+
+      <div class="foodgrid">
+        <div class="food">
+          <h3>🍣 寿司</h3>
+          <p>もりもり寿し、金沢まいもん寿司、寿司処 松の。1泊2日なので全部詰め込まず、松の＋もう1軒くらいでも十分。</p>
+        </div>
+        <div class="food">
+          <h3>🦀 香箱ガニ</h3>
+          <p>殻付きより、身・内子・外子・味噌を食べやすく盛った「甲羅盛り」が希望。寿司店や夕食の店で出会えればベスト。</p>
+        </div>
+        <div class="food">
+          <h3>🥃 バー</h3>
+          <p>夜の本命は19時からの一葉。SOLOはカフェ利用もできるが、22:00閉店なので夜の2軒目にする場合は時間に注意。</p>
+        </div>
+      </div>
+
+      <div class="choices">
+        <div class="choice">
+          <h3>1日目の寿司候補</h3>
+          <p>金沢駅到着後なら「もりもり寿し 金沢駅前店」が効率的。</p>
+        </div>
+        <div class="choice">
+          <h3>まいもん寿司</h3>
+          <p>新神田店はEPARKの順番待ちを使えるので、時間が合えば候補。松のを入れるなら無理に3軒全部行かなくてもよい。</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      ※ 時刻は旅行日未確定のため目安。営業時間・休館日・列車時刻は旅行日決定後に最終確認。<br>
+      ※ 画像は各公式観光サイト・店舗公式サイト等の公開画像を参照。
+    </footer>
+  </main>
+</body>
+</html>
