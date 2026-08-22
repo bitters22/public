@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VM研修課題_直江_同期発表モード_v6</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #0b1220;
+    font-family: "Yu Gothic", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  }
+  .present-body {
+    background:
+      radial-gradient(circle at top left, rgba(37,99,235,.16), transparent 36%),
+      linear-gradient(180deg, #111827 0%, #020617 100%);
+    color: #fff;
+  }
+  .notes-body {
+    background: #f4f7fb;
+    color: #0f172a;
+    overflow: auto;
+  }
+  .stage { position: fixed; inset: 0; display: grid; place-items: center; }
+  .frame-wrap {
+    width: min(100vw, calc(100vh * 16 / 9));
+    height: min(100vh, calc(100vw * 9 / 16));
+    position: relative; overflow: hidden; background: #fff;
+    box-shadow: 0 24px 70px rgba(0,0,0,.45);
+  }
+  iframe { width: 1280px; height: 720px; border: 0; display: block; transform-origin: 0 0; background: #fff; }
+  .hud {
+    position: fixed; left: 50%; bottom: 8px; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 999px;
+    color: #e5e7eb; background: rgba(15,23,42,.68);
+    border: 1px solid rgba(148,163,184,.22); backdrop-filter: blur(8px);
+    font-size: 11px; font-weight: 800; opacity: .18; transition: opacity .18s ease;
+    user-select: none; z-index: 10;
+  }
+  .hud:hover { opacity: 1; }
+  .btn {
+    border: 0; border-radius: 999px; color: #e5e7eb; background: rgba(37,99,235,.35);
+    padding: 3px 7px; font: inherit; cursor: pointer;
+  }
+  .btn:hover { background: rgba(37,99,235,.65); }
+  .progress { position: fixed; left: 0; bottom: 0; height: 4px; background: #2563eb; width: 0%; z-index: 11; transition: width .18s ease; }
+  .notes-wrap { max-width: 1220px; margin: 0 auto; padding: 14px 22px 28px; }
+  .notes-header {
+    position: sticky; top: 0; z-index: 10; background: rgba(244,247,251,.94);
+    backdrop-filter: blur(8px); border-bottom: 1px solid #dbe5f1; padding: 7px 0; margin-bottom: 8px;
+  }
+  .notes-title { margin: 0; font-size: 19px; line-height: 1.2; font-weight: 950; }
+  .notes-sub { display: flex; align-items: center; gap: 10px; color: #475569; font-weight: 800; margin-top: 3px; font-size: 13px; }
+  .notes-grid { display: block; }
+  .mini { background: transparent; border: 0; padding: 0; box-shadow: none; margin-bottom: 12px; }
+  .notes-controls { display: flex; gap: 8px; margin-top: 0; }
+  .notes-btn { border: 0; border-radius: 999px; padding: 8px 14px; background: #2563eb; color: #fff; font-weight: 900; cursor: pointer; }
+  .notes-btn.secondary { background: #e2e8f0; color: #0f172a; }
+  .thumbs { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+  .thumb { border: 1px solid #cbd5e1; background: #fff; color: #334155; border-radius: 999px; padding: 3px 7px; font-size: 11px; font-weight: 900; cursor: pointer; }
+  .thumb.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+  .script-card { background: #fff; border: 1px solid #dbe5f1; border-radius: 20px; padding: 16px 22px; box-shadow: 0 6px 18px rgba(15,23,42,.06); }
+  .script-text { white-space: pre-line; font-size: clamp(15px, 1.22vw, 18px); line-height: 1.62; letter-spacing: -0.01em; font-weight: 650; }
+  .point { margin-top: 10px; border-left: 6px solid #2563eb; background: #eef5ff; border-radius: 12px; padding: 8px 12px; color: #1e3a8a; font-size: 13px; line-height: 1.35; font-weight: 850; }
+</style>
+</head>
+<body>
+<script>
+const slides = [{"title":"表紙","srcdoc":"<!DOCTYPE html>\n<html lang=\"ja\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>表紙</title>\n  <style>\n    :root {\n      --bg: #f4f7fb;\n      --ink: #0f172a;\n      --muted: #475569;\n      --blue: #2563eb;\n      --blue-dark: #1d4ed8;\n      --navy: #0f3153;\n      --line: #d7e0ea;\n    }\n    * { box-sizing: border-box; }\n    body {\n      margin: 0;\n      background: #e6edf5;\n      font-family: \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Meiryo, sans-serif;\n      color: var(--ink);\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      min-height: 100vh;\n    }\n    .slide {\n      width: 1280px;\n      height: 720px;\n      background: var(--bg);\n      padding: 64px 68px 46px;\n      position: relative;\n      overflow: hidden;\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      text-align: center;\n    }\n    .ribbon {\n      position: absolute;\n      top: 0;\n      left: 0;\n      width: 100%;\n      height: 14px;\n      background: linear-gradient(90deg, var(--navy), var(--blue));\n    }\n    .main {\n      margin-top: 170px;\n      width: 100%;\n    }\n    h1 {\n      margin: 0;\n      font-size: 50px;\n      line-height: 1.18;\n      letter-spacing: -.03em;\n      font-weight: 950;\n      color: var(--ink);\n      white-space: nowrap;\n    }\n    .subtitle {\n      margin-top: 28px;\n      font-size: 27px;\n      line-height: 1.45;\n      font-weight: 850;\n      color: var(--blue-dark);\n    }\n    .cover-message {\n      position: absolute;\n      left: 50%;\n      bottom: 150px;\n      transform: translateX(-50%);\n      width: 1080px;\n      max-width: calc(100% - 160px);\n      background: rgba(255,255,255,.98);\n      border: 2px solid #d8e2ef;\n      border-radius: 14px;\n      padding: 22px 28px;\n      font-size: 22px;\n      line-height: 1.5;\n      font-weight: 800;\n      color: #1e293b;\n      box-shadow: 0 8px 22px rgba(15, 23, 42, .06);\n    }\n    .meta {\n      position: absolute;\n      right: 68px;\n      bottom: 58px;\n      text-align: right;\n      color: var(--ink);\n    }\n    .meta-main {\n      font-size: 25px;\n      line-height: 1.4;\n      font-weight: 900;\n    }\n    .date {\n      margin-top: 8px;\n      font-size: 20px;\n      font-weight: 800;\n      color: var(--muted);\n    }\n    .footer {\n      position: absolute;\n      left: 68px;\n      bottom: 34px;\n      color: #64748b;\n      font-size: 13px;\n      font-weight: 700;\n    }\n  </style>\n</head>\n<body>\n  <main class=\"slide\">\n    <div class=\"ribbon\"></div>\n    <section class=\"main\">\n      <h1>保守費削減を起点とした売上15％向上</h1>\n      <div class=\"subtitle\">AI基盤構築による保守業務効率化と新たな売上機会の創出</div>\n      <div class=\"meta\">\n        <div class=\"meta-main\">SFM1　直江智宏</div>\n        <div class=\"date\">2026年8月5日</div>\n      </div>\n    </section>\n    <div class=\"cover-message\">AI活用が前提となる時代、保守費削減の流れが避けられない。<br>顧客主導で削減される前に、当社から削減余地を提示し、AI基盤構築案件として売上化する。</div>\n    <div class=\"footer\">01</div>\n  </main>\n</body>\n</html>","script":"本日は、「保守費削減を起点とした売上15％向上」というテーマで発表します。\n\nAI活用が前提となる時代、保守費削減の流れは避けられません。\n\nそこで本日は、顧客主導で削減される前に、当社から削減余地を提示し、AI基盤構築案件として売上化するという考え方を提言します。","point":"保守費削減＝売上減ではなく、売上機会に変える。","speechText":"本日は、「保守費削減を起点とした売上15％向上」というテーマで発表します。\n\nAI活用が前提となる時代、保守費削減の流れは避けられません。\n\nそこで本日は、顧客主導で削減される前に、当社から削減余地を提示し、AI基盤構築案件として売上化するという考え方を提言します。"},{"title":"本資料の流れ","srcdoc":"<!DOCTYPE html>\n<html lang=\"ja\">\n<head>\n<meta charset=\"utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>本資料の流れ</title>\n<style>\n:root{\n  --bg:#f6f8fb;\n  --panel:#fff;\n  --navy:#102a43;\n  --blue:#2563eb;\n  --blue-dark:#1d4ed8;\n  --line:#dbe4ee;\n  --pale-blue:#e8f0ff;\n  --text:#0f172a;\n  --muted:#64748b;\n}\n*{box-sizing:border-box}\nbody{\n  margin:0;\n  background:#dfe6ee;\n  color:var(--text);\n  font-family:\"Yu Gothic\",\"Hiragino Kaku Gothic ProN\",Meiryo,sans-serif;\n  display:flex;\n  justify-content:center;\n  align-items:center;\n  min-height:100vh\n}\n.slide{\n  width:1280px;\n  height:720px;\n  background:var(--bg);\n  border-radius:18px;\n  box-shadow:0 16px 42px rgba(16,42,67,.22);\n  padding:28px 58px 36px;\n  position:relative;\n  overflow:hidden\n}\n.slide-num{\n  position:absolute;\n  right:52px;\n  bottom:20px;\n  color:#7a8491;\n  font-weight:700;\n  font-size:14px\n}\n.kicker{\n  color:var(--blue);\n  font-size:15px;\n  font-weight:900;\n  margin-bottom:8px;\n  letter-spacing:.02em\n}\nh1{\n  margin:0 0 16px;\n  font-size:34px;\n  line-height:1.12;\n  letter-spacing:-.02em\n}\n.timeline{\n  position:relative;\n  display:grid;\n  gap:10px;\n  margin-top:8px;\n  padding-left:64px;\n}\n.route-line{\n  position:absolute;\n  left:22px;\n  top:36px;\n  bottom:36px;\n  width:6px;\n  border-radius:999px;\n  background:linear-gradient(180deg,#60a5fa 0%,#2563eb 55%,#1d4ed8 100%);\n  box-shadow:0 0 0 5px rgba(37,99,235,.08);\n}\n.row{\n  position:relative;\n  display:grid;\n  grid-template-columns:250px 1fr 82px;\n  align-items:center;\n  min-height:92px;\n  background:#fff;\n  border:1px solid var(--line);\n  border-radius:20px;\n  padding:14px 18px;\n  box-shadow:0 8px 22px rgba(16,42,67,.06)\n}\n.row.main{\n  background:var(--pale-blue);\n  border:2px solid #a9c3ff;\n  box-shadow:0 10px 26px rgba(31,94,255,.12);\n}\n.badges{\n  display:flex;\n  gap:6px;\n  margin-bottom:7px;\n}\n.badge.main-tag{\n  background:var(--blue);\n  color:#fff;\n  border-color:var(--blue);\n}\n\n.station{\n  position:absolute;\n  left:-64px;\n  top:50%;\n  transform:translateY(-50%);\n  width:50px;\n  height:50px;\n  border-radius:50%;\n  background:#fff;\n  border:6px solid var(--blue);\n  box-shadow:0 6px 18px rgba(37,99,235,.22);\n  display:flex;\n  align-items:center;\n  justify-content:center;\n  color:var(--blue-dark);\n  font-weight:950;\n  font-size:20px;\n  z-index:2;\n}\n.title-wrap{\n  border-right:1px solid #cbd5e1;\n  padding-right:16px;\n  white-space:nowrap;\n}\n.badge{\n  display:inline-block;\n  border-radius:999px;\n  background:#eef4ff;\n  color:var(--blue-dark);\n  border:1px solid #bfdbfe;\n  font-size:12px;\n  font-weight:900;\n  padding:3px 11px;\n  margin-bottom:7px\n}\n.title{\n  font-size:20px;\n  line-height:1.18;\n  font-weight:950;\n  letter-spacing:-.015em;\n  white-space:nowrap;\n}\n.desc{\n  font-size:18px;\n  line-height:1.35;\n  font-weight:800;\n  padding-left:18px;\n  color:#102a43\n}\n.page{\n  justify-self:end;\n  text-align:center;\n  color:#102a43;\n  font-weight:950;\n  font-size:14px;\n  line-height:1.2\n}\n.page small{\n  display:block;\n  color:#4a5568;\n  font-size:11px;\n  font-weight:800;\n  margin-top:3px\n}\n.note{\n  position:absolute;\n  right:58px;\n  bottom:24px;\n  color:#667085;\n  font-size:11px\n}\n</style>\n</head>\n<body>\n<section class=\"slide\">\n  <div class=\"slide-num\">02</div>\n  <div class=\"kicker\">02 / 本資料の流れ</div>\n  <h1>本資料の流れ</h1>\n\n  <div class=\"timeline\">\n    <div class=\"route-line\"></div>\n\n    <div class=\"row main\">\n      <div class=\"station\">①</div>\n      <div class=\"title-wrap\">\n        <div class=\"badges\"><div class=\"badge main-tag\">メイン</div><div class=\"badge\">売上化</div></div>\n        <div class=\"title\">AI基盤構築の売上化</div>\n      </div>\n      <div class=\"desc\">保守費削減を、AI基盤構築案件として売上化する</div>\n      <div class=\"page\">本編<br>P.2〜6</div>\n    </div>\n\n    <div class=\"row\">\n      <div class=\"station\">②</div>\n      <div class=\"title-wrap\">\n        <div class=\"badge\">展開</div>\n        <div class=\"title\">他ベンダー領域への展開</div>\n      </div>\n      <div class=\"desc\">自社保守の削減モデルを、他ベンダー領域への提案に広げる</div>\n      <div class=\"page\">本編<br>P.7</div>\n    </div>\n\n    <div class=\"row\">\n      <div class=\"station\">③</div>\n      <div class=\"title-wrap\">\n        <div class=\"badge\">高次元化</div>\n        <div class=\"title\">保守人材の高次元化</div>\n      </div>\n      <div class=\"desc\">保守メンバーを、作業担当から改善提案を担う人材へ高次元化する</div>\n      <div class=\"page\">本編<br>P.8</div>\n    </div>\n\n    <div class=\"row\">\n      <div class=\"station\">④</div>\n      <div class=\"title-wrap\">\n        <div class=\"badge\">まとめ</div>\n        <div class=\"title\">保守を攻めの起点にする</div>\n      </div>\n      <div class=\"desc\">保守から新たな価値を生み出し、当社のブランド価値を高める</div>\n      <div class=\"page\">本編<br>P.9</div>\n    </div>\n  </div>\n\n  <div class=\"note\">※ページは、表紙・本資料の流れを除いた本編ページ番号</div>\n</section>\n</body>\n</html>","script":"本資料の流れです。\n\n今回のメインテーマは、1つ目の「AI基盤構築の売上化」です。\n\nまず、保守費削減をどのようにAI基盤構築案件として売上化するかを説明します。\n\nそのうえで、自社保守で作ったモデルを他ベンダー領域へ展開する考え方と、保守メンバーの役割を高次元化する効果について説明します。\n\n売上15％向上に直接つながるのは1つ目で、2つ目と3つ目は、この取り組みを広げるための補足です。\n\n最後に、保守を攻めの起点にするという形でまとめます。","point":"メインは①。②③は広がりと副次効果。","speechText":"本資料の流れです。\n\n今回のメインテーマは、1つ目の「AI基盤構築の売上化」です。\n\nまず、保守費削減をどのようにAI基盤構築案件として売上化するかを説明します。\n\nそのうえで、自社保守で作ったモデルをたベンダー領域へ展開する考え方と、保守メンバーの役割を高次元化する効果について説明します。\n\n売上15％向上に直接つながるのは1つ目で、2つ目と3つ目は、この取り組みを広げるための補足です。\n\n最後に、保守を攻めの起点にするという形でまとめます。"},{"title":"AI基盤構築で売上15％を目指す","srcdoc":"<!DOCTYPE html>\n<html lang=\"ja\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>AI基盤構築で売上15％を目指す</title>\n  <style>\n    :root {\n      --bg: #f4f7fb;\n      --ink: #0f172a;\n      --muted: #475569;\n      --blue: #2563eb;\n      --blue-mid: #c7d8ff;\n      --teal-soft: #d9eeee;\n      --navy: #0f3153;\n      --line: #d7e0ea;\n    }\n    * { box-sizing: border-box; }\n    body {\n      margin: 0;\n      background: #e6edf5;\n      font-family: \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Meiryo, sans-serif;\n      color: var(--ink);\n    }\n    .slide {\n      width: 1280px;\n      height: 720px;\n      margin: 0 auto;\n      background: var(--bg);\n      padding: 22px 32px 24px;\n      position: relative;\n      overflow: hidden;\n    }\n    .pagehead {\n      font-size: 14px;\n      font-weight: 800;\n      color: var(--blue);\n      margin-bottom: 6px;\n      letter-spacing: .02em;\n    }\n    h1 {\n      margin: 0;\n      font-size: 33px;\n      line-height: 1.14;\n      letter-spacing: -.02em;\n      color: var(--ink);\n    }\n    .subtitle {\n      margin-top: 6px;\n      color: var(--blue);\n      font-size: 21px;\n      font-weight: 850;\n      line-height: 1.2;\n    }\n    .content {\n      width: 86%;\n      margin: 16px auto 0;\n      display: flex;\n      flex-direction: column;\n      gap: 8px;\n    }\n    .label {\n      display: inline-flex;\n      align-items: center;\n      min-width: 108px;\n      justify-content: center;\n      padding: 4px 13px;\n      border-radius: 999px;\n      font-size: 13px;\n      font-weight: 850;\n      color: var(--blue);\n      background: #e8eef8;\n      margin-bottom: 5px;\n    }\n    .block {\n      border-radius: 14px;\n      width: 100%;\n      box-shadow: 0 2px 8px rgba(15, 23, 42, .04);\n    }\n\n    .label.status-label {\n      color: #111827;\n      background: #e5e7eb;\n    }\n\n    .status-wrap {\n      width: 100%;\n      margin-left: 0;\n      margin-right: 0;\n    }\n    .status {\n      background: #f3f4f6;\n      border: 1px solid var(--line);\n      padding: 10px 18px 11px;\n    }\n    .status-text {\n      font-size: 18px;\n      line-height: 1.45;\n      font-weight: 750;\n      text-align: center;\n      color: #1e293b;\n    }\n    .status-text strong {\n      color: var(--blue);\n      font-weight: 900;\n    }\n    .arrow {\n      font-size: 22px;\n      line-height: 1;\n      font-weight: 900;\n      color: #8b9ab5;\n      text-align: center;\n      margin: 0;\n    }\n    .flow-note {\n      position: relative;\n      height: 74px;\n      margin: -2px 0 0;\n    }\n    .flow-note::before {\n      content: \"\";\n      position: absolute;\n      top: 2px;\n      bottom: 11px;\n      left: 50%;\n      width: 4px;\n      transform: translateX(-50%);\n      background: linear-gradient(180deg, #94a3b8 0%, #2563eb 100%);\n      border-radius: 999px;\n      z-index: 0;\n    }\n    .flow-note::after {\n      content: \"\";\n      position: absolute;\n      left: 50%;\n      bottom: 1px;\n      transform: translateX(-50%);\n      width: 0;\n      height: 0;\n      border-left: 12px solid transparent;\n      border-right: 12px solid transparent;\n      border-top: 20px solid #2563eb;\n      filter: drop-shadow(0 2px 2px rgba(37,99,235,.18));\n      z-index: 0;\n    }\n    .flow-label {\n      position: absolute;\n      left: 50%;\n      top: 42%;\n      transform: translate(-50%, -50%);\n      z-index: 1;\n      color: #334155;\n      font-size: 16px;\n      font-weight: 850;\n      line-height: 1.2;\n      white-space: nowrap;\n      background: var(--bg);\n      padding: 0 10px;\n    }\n    .proposal {\n      background: var(--teal-soft);\n      border: 1px solid #b8d9d9;\n      padding: 11px 20px 12px;\n    }\n    .proposal-text {\n      text-align: center;\n      font-size: 20px;\n      line-height: 1.45;\n      font-weight: 850;\n    }\n    .proposal-text strong {\n      color: var(--blue);\n      font-weight: 950;\n    }\n    .target {\n      background: linear-gradient(180deg, #d9e6ff 0%, var(--blue-mid) 100%);\n      border: 2px solid #97b1f7;\n      padding: 12px 20px 12px;\n      text-align: center;\n    }\n    .amount {\n      color: var(--blue);\n      font-size: 58px;\n      font-weight: 950;\n      line-height: .98;\n      letter-spacing: .02em;\n      margin-bottom: 6px;\n    }\n    .target-main {\n      font-size: 18px;\n      line-height: 1.3;\n      font-weight: 850;\n      margin-bottom: 4px;\n      color: #0f172a;\n    }\n    .target-note {\n      font-size: 13px;\n      line-height: 1.25;\n      font-weight: 650;\n      color: var(--muted);\n    }\n    .message {\n      background: var(--navy);\n      color: #fff;\n      border-radius: 14px;\n      padding: 12px 20px;\n      text-align: center;\n      font-size: 22px;\n      line-height: 1.25;\n      font-weight: 950;\n      box-shadow: 0 6px 18px rgba(15, 49, 83, .14);\n      margin-top: 2px;\n    }\n    .footer-left, .footer-right {\n      position: absolute;\n      bottom: 8px;\n      color: #64748b;\n      font-size: 11px;\n      font-weight: 700;\n    }\n    .footer-left { left: 32px; }\n    .footer-right { right: 24px; }\n  </style>\n</head>\n<body>\n  <main class=\"slide\">\n    <div class=\"pagehead\">03 / ① AI基盤構築の売上化</div>\n    <h1>AI基盤構築で売上15％を目指す</h1>\n    <div class=\"subtitle\">保守費削減を、AI基盤構築の売上に変える</div>\n\n    <section class=\"content\">\n      <div class=\"status-wrap\">\n        <div class=\"label status-label\">想定される変化</div>\n        <div class=\"block status\">\n          <div class=\"status-text\">\n            生成AIの活用が進むことで、保守業務の効率化が進み、<br>\n            顧客側にも <strong>「AIで保守要員を減らせるのではないか」</strong> という発想が生まれる。\n          </div>\n        </div>\n      </div>\n\n      <div class=\"flow-note\">\n        <div class=\"flow-label\">顧客主導で保守費が削減される前に</div>\n      </div>\n\n      <div>\n        <div class=\"label\">当社の提案</div>\n        <div class=\"block proposal\">\n          <div class=\"proposal-text\">\n            当社から保守要員の削減余地を提示し、<br>\n            <strong>AI基盤構築案件として売上化する。</strong>\n          </div>\n        </div>\n      </div>\n\n      <div>\n        <div class=\"label\">目指す売上向上額</div>\n        <div class=\"block target\">\n          <div class=\"amount\">約23億円</div>\n          <div class=\"target-main\">全社売上15％向上を、AI基盤構築案件の獲得で目指す。</div>\n          <div class=\"target-note\">計算補足：152億円 × 15％ ＝ 22.8億円</div>\n        </div>\n      </div>\n\n      <div class=\"message\">保守費削減を、売上機会に変える。</div>\n    </section>\n\n        <div class=\"footer-right\">03</div>\n  </main>\n</body>\n</html>\n","script":"まず、AI基盤構築で売上15％向上を目指す考え方です。\n\n生成AIの活用が進むことで、保守業務の効率化は今後さらに進んでいきます。\n\nそうなると、顧客側にも「AIを使えば、今の保守要員を減らせるのではないか」という発想が生まれます。\n\nここで当社が受け身になると、単純に既存保守売上の減額につながる可能性があります。\n\nそのため、顧客主導で保守費が削減される前に、当社から削減余地を提示します。\n\nそして、その削減効果をもとに、AI基盤構築案件として売上化します。\n\nこれにより、全社売上15％向上に相当する約23億円を目指します。\n\nつまり、保守費削減を売上機会に変えるという考え方です。","point":"削減される前に、こちらから提案する。","speechText":"まず、AI基盤構築で売上15％向上を目指す考え方です。\n\n生成AIの活用が進むことで、保守業務の効率化は今後さらに進んでいきます。\n\nそうなると、顧客側にも「AIを使えば、今の保守要員を減らせるのではないか」という発想が生まれます。\n\nここで当社が受け身になると、単純に既存保守売上の減額につながる可能性があります。\n\nそのため、顧客主導で保守費が削減される前に、当社から削減余地を提示します。\n\nそして、その削減効果をもとに、AI基盤構築案件として売上化します。\n\nこれにより、全社売上15％向上に相当する約23億円を目指します。\n\nつまり、保守費削減を売上機会に変えるという考え方です。"},{"title":"全社展開時の提案余地","srcdoc":"<!DOCTYPE html>\n<html lang=\"ja\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>全社展開時の提案余地</title>\n  <style>\n    :root {\n      --bg: #f4f7fb;\n      --ink: #0f172a;\n      --muted: #475569;\n      --blue: #2563eb;\n      --blue-dark: #1d4ed8;\n      --blue-mid: #c7d8ff;\n      --blue-soft: #eaf2ff;\n      --teal-soft: #d9eeee;\n      --navy: #0f3153;\n      --line: #d7e0ea;\n      --gray: #f3f4f6;\n    }\n\n    * { box-sizing: border-box; }\n\n    body {\n      margin: 0;\n      background: #e6edf5;\n      font-family: \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Meiryo, sans-serif;\n      color: var(--ink);\n    }\n\n    .slide {\n      width: 1280px;\n      height: 720px;\n      margin: 0 auto;\n      background: var(--bg);\n      padding: 22px 32px 24px;\n      position: relative;\n      overflow: hidden;\n    }\n\n    .pagehead {\n      font-size: 14px;\n      font-weight: 800;\n      color: var(--blue);\n      margin-bottom: 6px;\n      letter-spacing: .02em;\n    }\n\n    h1 {\n      margin: 0;\n      font-size: 33px;\n      line-height: 1.14;\n      letter-spacing: -.02em;\n      color: var(--ink);\n    }\n\n    .subtitle {\n      margin-top: 6px;\n      color: var(--blue);\n      font-size: 21px;\n      font-weight: 850;\n      line-height: 1.2;\n    }\n\n    .content {\n      width: 88%;\n      margin: 17px auto 0;\n      display: flex;\n      flex-direction: column;\n      gap: 10px;\n    }\n\n    .row {\n      display: grid;\n      grid-template-columns: 1fr 1fr;\n      gap: 16px;\n    }\n\n    .card {\n      border-radius: 16px;\n      padding: 16px 20px;\n      box-shadow: 0 2px 8px rgba(15, 23, 42, .04);\n      border: 1px solid var(--line);\n      background: #fff;\n    }\n\n    .card.gray {\n      background: #ffffff;\n      border-color: #d7e0ea;\n    }\n\n    .card.teal {\n      background: var(--teal-soft);\n      border-color: #b8d9d9;\n    }\n\n    .card-title {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      min-width: 112px;\n      padding: 4px 13px;\n      border-radius: 999px;\n      font-size: 13px;\n      font-weight: 850;\n      color: var(--blue);\n      background: #e8eef8;\n      margin-bottom: 10px;\n    }\n\n    .card.gray .card-title {\n      color: #111827;\n      background: #e5e7eb;\n    }\n\n    .text {\n      font-size: 18px;\n      line-height: 1.55;\n      font-weight: 740;\n      color: #1e293b;\n    }\n\n    .text strong {\n      color: var(--blue-dark);\n      font-weight: 950;\n    }\n\n    .note {\n      margin-top: 6px;\n      font-size: 13px;\n      color: var(--muted);\n      font-weight: 650;\n      line-height: 1.4;\n    }\n\n    .value-formula {\n      margin-top: 10px;\n      background: rgba(255, 255, 255, .65);\n      border: 1px solid rgba(37, 99, 235, .18);\n      border-radius: 12px;\n      padding: 10px 12px;\n      text-align: center;\n      font-size: 24px;\n      line-height: 1.25;\n      font-weight: 950;\n      color: var(--blue-dark);\n    }\n\n    .calc {\n      background: linear-gradient(180deg, #eef5ff 0%, #e5efff 100%);\n      border: 1px solid #c7d8f7;\n      border-radius: 16px;\n      padding: 14px 18px 16px;\n      box-shadow: 0 2px 8px rgba(15, 23, 42, .04);\n    }\n\n    .calc-head {\n      display: flex;\n      justify-content: space-between;\n      align-items: baseline;\n      margin-bottom: 10px;\n    }\n\n    .calc-title {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      padding: 4px 13px;\n      border-radius: 999px;\n      font-size: 13px;\n      font-weight: 850;\n      color: var(--blue);\n      background: #e8eef8;\n    }\n\n    .formula {\n      font-size: 13px;\n      color: var(--muted);\n      font-weight: 750;\n    }\n\n    .metrics {\n      display: grid;\n      grid-template-columns: repeat(5, 1fr);\n      gap: 10px;\n      align-items: stretch;\n    }\n\n    .metric {\n      background: #fff;\n      border: 1px solid #d8e4f6;\n      border-radius: 13px;\n      padding: 11px 8px 10px;\n      text-align: center;\n      min-height: 94px;\n    }\n\n    .metric .k {\n      font-size: 12px;\n      font-weight: 850;\n      color: #475569;\n      margin-bottom: 6px;\n      min-height: 18px;\n    }\n\n    .metric .v {\n      font-size: 28px;\n      line-height: 1.05;\n      font-weight: 950;\n      color: #0f172a;\n      white-space: nowrap;\n    }\n\n    .metric .s {\n      margin-top: 4px;\n      font-size: 11px;\n      color: #64748b;\n      font-weight: 700;\n      line-height: 1.25;\n    }\n\n    .metric.highlight {\n      background: linear-gradient(180deg, #d9e6ff 0%, var(--blue-mid) 100%);\n      border: 2px solid #9bb6ff;\n    }\n\n    .metric.highlight .v {\n      color: var(--blue);\n      font-size: 36px;\n    }\n\n    .message {\n      background: var(--navy);\n      color: #fff;\n      border-radius: 16px;\n      padding: 13px 20px;\n      text-align: center;\n      font-size: 22px;\n      line-height: 1.35;\n      font-weight: 950;\n      box-shadow: 0 6px 18px rgba(15, 49, 83, .14);\n    }\n\n    .message strong {\n      color: #dbeafe;\n      font-weight: 950;\n    }\n\n    .message-sub {\n      display: inline-block;\n      margin-top: 4px;\n      font-size: 17px;\n      line-height: 1.35;\n      font-weight: 800;\n      color: #dbeafe;\n    }\n\n    .footer-left, .footer-right {\n      position: absolute;\n      bottom: 8px;\n      color: #64748b;\n      font-size: 11px;\n      font-weight: 700;\n    }\n\n    .footer-left { left: 32px; }\n    .footer-right { right: 24px; }\n  </style>\n</head>\n<body>\n  <main class=\"slide\">\n    <div class=\"pagehead\">04 / ① AI基盤構築の売上化</div>\n    <h1>全社展開時の提案余地</h1>\n    <div class=\"subtitle\">保守費削減効果をAI基盤構築の価値として見ると、約50億円の提案余地がある</div>\n\n    <section class=\"content\">\n      <div class=\"row\">\n        <div class=\"card gray\">\n          <div class=\"card-title\">① 削減対象</div>\n          <div class=\"text\">\n            AI基盤を構築した前提で試算した結果、<br>\n            保守工数の <strong>1/3程度は削減対象にできる</strong> と判断した。\n          </div>\n          <div class=\"note\">※次ページで、3名保守プロジェクトをモデルケースとした試算内容を説明</div>\n        </div>\n\n        <div class=\"card teal\">\n          <div class=\"card-title\">② AI基盤構築の価値（売上換算）</div>\n          <div class=\"text\">\n            AI基盤構築の価値は、削減できる年間保守費の<br>\n            <strong>2年分</strong> を目安として試算する。\n          </div>\n          <div class=\"value-formula\">年間保守費削減額 × 2年</div>\n          <div class=\"note\">2年で投資回収できる水準であれば、顧客の投資判断・社内稟議にも通しやすい。</div>\n        </div>\n      </div>\n\n      <div class=\"calc\">\n        <div class=\"calc-head\">\n          <div class=\"calc-title\">③ 全社展開時の提案余地</div>\n          <div class=\"formula\">計算補足：76億円 × 1/3 × 2年 ＝ 約50.7億円</div>\n        </div>\n\n        <div class=\"metrics\">\n          <div class=\"metric\">\n            <div class=\"k\">全社売上</div>\n            <div class=\"v\">152億円</div>\n          </div>\n          <div class=\"metric\">\n            <div class=\"k\">保守売上</div>\n            <div class=\"v\">約76億円</div>\n            <div class=\"s\">全社売上の50％と仮定</div>\n          </div>\n          <div class=\"metric\">\n            <div class=\"k\">保守費1/3削減</div>\n            <div class=\"v\">約25億円</div>\n            <div class=\"s\">年間削減効果</div>\n          </div>\n          <div class=\"metric\">\n            <div class=\"k\">価値の目安</div>\n            <div class=\"v\">× 2年</div>\n            <div class=\"s\">投資回収の目安</div>\n          </div>\n          <div class=\"metric highlight\">\n            <div class=\"k\">提案余地</div>\n            <div class=\"v\">約50億円</div>\n            <div class=\"s\">売上換算価値</div>\n          </div>\n        </div>\n      </div>\n\n      <div class=\"message\">\n        約50億円の提案余地は、売上15％向上に必要な約23億円を大きく上回る。<br>\n        <span class=\"message-sub\">一人保守などの制約により全ての保守PJで提案できるわけではないが、15％達成は大いに望める。</span>\n      </div>\n    </section>\n\n        <div class=\"footer-right\">04</div>\n  </main>\n</body>\n</html>","script":"では、売上15％向上に必要な約23億円が、実際に狙える規模なのか、全社展開した場合の提案余地を試算します。\n\n考え方は大きく2つです。\n\n1つ目は、AI基盤を構築した前提で、保守工数の3分の1程度を削減対象にできるという考え方です。この根拠は、次のモデルケースで説明します。\n\n2つ目は、AI基盤構築の価値を、削減できる年間保守費の2年分と見ることです。2年で投資回収できる水準であれば、顧客も投資判断しやすいと考えました。\n\nこの考え方を全社に当てはめ、提案余地の規模感を試算すると、次のようになります。\n\n全社売上を152億円、そのうち保守売上を約半分の76億円と仮定します。その3分の1を削減対象にすると年間約25億円、2年分では約50億円の提案余地になります。\n\nかなり粗い前提を置いた試算ではありますが、全社に展開した場合に、どの程度の提案余地があるのか、その規模感は伝えられると思います。\n\n一人保守のように削減余地が限られるプロジェクトもあるため、すべての保守プロジェクトで同じように提案できるわけではありません。\n\nそれでも、売上15％向上に必要な約23億円は、十分に狙える規模だと考えています。","point":"約50億円は提案余地。23億円は十分狙える。","speechText":"では、売上15％向上に必要な約23億円が、実際に狙える規模なのか、全社展開した場合の提案余地を試算します。\n\n考え方は大きく2つです。\n\n1つ目は、AI基盤を構築した前提で、保守工数の3分の1程度を削減対象にできるという考え方です。この根拠は、次のモデルケースで説明します。\n\n2つ目は、AI基盤構築の価値を、削減できる年間保守費の2年分と見ることです。2年で投資回収できる水準であれば、顧客も投資判断しやすいと考えました。\n\nこの考え方を全社に当てはめ、提案余地の規模感を試算すると、次のようになります。\n\n全社売上を152億円、そのうち保守売上を約半分の76億円と仮定します。その3分の1を削減対象にすると年間約25億円、2年分では約50億円の提案余地になります。\n\nかなり粗い前提を置いた試算ではありますが、全社に展開した場合に、どの程度の提案余地があるのか、その規模感は伝えられると思います。\n\n一人保守のように削減余地が限られるプロジェクトもあるため、すべての保守プロジェクトで同じように提案できるわけではありません。\n\nそれでも、売上15％向上に必要な約23億円は、十分に狙える規模だと考えています。"},{"title":"3名保守プロジェクトのモデルケース","srcdoc":"<!DOCTYPE html>\n<html lang=\"ja\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>3名保守プロジェクトのモデルケース</title>\n  <style>\n    :root {\n      --bg: #f4f7fb;\n      --ink: #0f172a;\n      --muted: #475569;\n      --blue: #2563eb;\n      --blue-dark: #1d4ed8;\n      --blue-soft: #eaf2ff;\n      --teal-soft: #d9eeee;\n      --navy: #0f3153;\n      --line: #d7e0ea;\n      --highlight: #fff7db;\n    }\n\n    * { box-sizing: border-box; }\n\n    body {\n      margin: 0;\n      background: #e6edf5;\n      font-family: \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Meiryo, sans-serif;\n      color: var(--ink);\n    }\n\n    .slide {\n      width: 1280px;\n      height: 720px;\n      margin: 0 auto;\n      background: var(--bg);\n      padding: 18px 32px 20px;\n      position: relative;\n      overflow: hidden;\n    }\n\n    .pagehead {\n      font-size: 12px;\n      font-weight: 800;\n      color: var(--blue);\n      margin-bottom: 4px;\n      letter-spacing: .02em;\n    }\n\n    h1 {\n      margin: 0;\n      font-size: 30px;\n      line-height: 1.14;\n      letter-spacing: -.02em;\n      color: var(--ink);\n    }\n\n    .subtitle {\n      margin-top: 6px;\n      color: var(--blue);\n      font-size: 19px;\n      font-weight: 850;\n      line-height: 1.2;\n    }\n\n    .content {\n      width: 94%;\n      margin: 8px auto 0;\n      display: flex;\n      flex-direction: column;\n      gap: 6px;\n    }\n\n    .case-row {\n      display: grid;\n      grid-template-columns: repeat(3, 1fr);\n      gap: 10px;\n    }\n\n    .case-card {\n      background: #fff;\n      border: 1px solid var(--line);\n      border-radius: 14px;\n      padding: 5px 12px;\n      box-shadow: 0 2px 8px rgba(15, 23, 42, .04);\n      text-align: center;\n    }\n\n    .case-k {\n      font-size: 13px;\n      font-weight: 850;\n      color: #475569;\n      margin-bottom: 4px;\n    }\n\n    .case-v {\n      font-size: 20px;\n      line-height: 1.2;\n      font-weight: 950;\n      color: var(--blue-dark);\n    }\n\n    .case-v small {\n      font-size: 14px;\n      color: #64748b;\n      font-weight: 800;\n    }\n\n    .table-wrap {\n      background: #fff;\n      border: 1px solid var(--line);\n      border-radius: 16px;\n      padding: 6px 8px 6px;\n      box-shadow: 0 2px 8px rgba(15, 23, 42, .04);\n    }\n\n    table {\n      width: 100%;\n      border-collapse: collapse;\n      table-layout: fixed;\n      font-size: 12.1px;\n      line-height: 1.22;\n    }\n\n    th {\n      background: #eaf2ff;\n      color: #0f172a;\n      font-size: 11.8px;\n      font-weight: 900;\n      padding: 5px 6px;\n      border: 1px solid #cbd8eb;\n      text-align: left;\n    }\n\n    td {\n      border: 1px solid #d9e2ef;\n      padding: 4px 6px;\n      vertical-align: top;\n      font-weight: 650;\n      color: #1e293b;\n    }\n\n    th:nth-child(1), td:nth-child(1) { width: 17%; }\n    th:nth-child(2), td:nth-child(2) { width: 9%; text-align: right; white-space: nowrap; }\n    th:nth-child(3), td:nth-child(3) { width: 49%; }\n    th:nth-child(4), td:nth-child(4) { width: 25%; }\n\n    .target-row td {\n      background: var(--highlight);\n      font-weight: 850;\n    }\n\n    .total-row td {\n      background: #f8fafc;\n      font-weight: 900;\n    }\n\n    .hours {\n      color: var(--blue-dark);\n      font-weight: 950;\n    }\n\n    .thinking {\n      background: #eef5ff;\n      border: 1px solid #c7d8f7;\n      border-radius: 14px;\n      padding: 7px 14px;\n      font-size: 15px;\n      line-height: 1.45;\n      font-weight: 780;\n      color: #1e293b;\n      box-shadow: 0 2px 8px rgba(15, 23, 42, .04);\n      text-align: center;\n    }\n\n    .thinking strong {\n      color: var(--blue-dark);\n      font-weight: 950;\n    }\n\n    .message {\n      background: var(--navy);\n      color: #fff;\n      border-radius: 14px;\n      padding: 9px 20px;\n      text-align: center;\n      font-size: 20px;\n      line-height: 1.3;\n      font-weight: 950;\n      box-shadow: 0 6px 18px rgba(15, 49, 83, .14);\n    }\n\n    .footer-left, .footer-right {\n      position: absolute;\n      bottom: 6px;\n      color: #64748b;\n      font-size: 11px;\n      font-weight: 700;\n    }\n\n    .footer-left { left: 32px; }\n    .footer-right { right: 24px; }\n  </style>\n</head>\n<body>\n  <main class=\"slide\">\n    <div class=\"pagehead\">05 / ① AI基盤構築の売上化</div>\n    <h1>3名保守プロジェクトのモデルケース</h1>\n    <div class=\"subtitle\">保守業務を分解し、AI基盤化の初期対象200hを抽出する</div>\n\n    <section class=\"content\">\n      <div class=\"case-row\">\n        <div class=\"case-card\">\n          <div class=\"case-k\">ケース</div>\n          <div class=\"case-v\">3名保守プロジェクト</div>\n        </div>\n        <div class=\"case-card\">\n          <div class=\"case-k\">月間工数</div>\n          <div class=\"case-v\">450h/月<br><small>150h × 3名</small></div>\n        </div>\n        <div class=\"case-card\">\n          <div class=\"case-k\">削減目標</div>\n          <div class=\"case-v\">1名分 150h/月</div>\n        </div>\n      </div>\n\n      <div class=\"table-wrap\">\n        <table>\n          <thead>\n            <tr>\n              <th>現在の保守業務</th>\n              <th>現在の月間工数</th>\n              <th>AI基盤化で行うこと</th>\n              <th>AI基盤化の仕組み<br>（仕組み・ツール・処理）</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr class=\"target-row\">\n              <td>問い合わせ対応</td>\n              <td><span class=\"hours\">120h</span></td>\n              <td>問い合わせ内容を受け取り、過去QA・仕様書・障害履歴・対応履歴を横断検索。回答案、根拠資料、追加確認事項、類似チケットを提示する</td>\n              <td>Copilot Studio／RAG／ナレッジ検索／Redmine連携</td>\n            </tr>\n            <tr class=\"target-row\">\n              <td>影響調査・仕様調査</td>\n              <td><span class=\"hours\">80h</span></td>\n              <td>対象モジュール・画面・テーブル・バッチ・連携システムを、設計書・連携システム一覧・変更履歴から抽出。影響候補、確認順序、テスト観点を提示する</td>\n              <td>RAG／文書インデックス／全文検索／設計書検索</td>\n            </tr>\n            <tr>\n              <td>障害対応・原因調査</td>\n              <td>30h</td>\n              <td>エラー文言、ログ、発生日、対象ジョブをもとに、類似障害、過去原因、暫定対応、確認ログを提示する</td>\n              <td>RAG／Redmine連携／ログ検索／ジョブ履歴検索</td>\n            </tr>\n            <tr>\n              <td>定型確認・日次/月次作業</td>\n              <td>30h</td>\n              <td>確認結果を取り込み、正常・異常候補、未確認項目、前回差異を整理。必要に応じて担当者へ通知する</td>\n              <td>Power Automate／Copilot Studio／台帳連携</td>\n            </tr>\n            <tr>\n              <td>報告書・資料作成</td>\n              <td>30h</td>\n              <td>会議トランスクリプト、Redmine対応履歴、調査メモから、進捗・課題・対応方針を抽出し、報告内容を自動生成する</td>\n              <td>Copilot Studio／Power Automate／Redmine連携／SharePoint連携</td>\n            </tr>\n            <tr>\n              <td>小規模改修・設定変更</td>\n              <td>130h</td>\n              <td>仕様確認、影響確認、修正対象候補、テスト観点の整理を支援。実装・判断・リリースは担当者が実施する</td>\n              <td>RAG／設計書検索／コード検索／将来拡張</td>\n            </tr>\n            <tr>\n              <td>顧客調整・会議</td>\n              <td>30h</td>\n              <td>会議内容から論点、宿題事項、決定事項、次回確認事項を抽出し、議事メモ・課題管理へ反映する</td>\n              <td>Teamsトランスクリプト連携／Copilot Studio</td>\n            </tr>\n            <tr class=\"total-row\">\n              <td>合計</td>\n              <td>450h</td>\n              <td>初期対象は、問い合わせ対応120h＋影響調査80h＝200hに絞る</td>\n              <td></td>\n            </tr>\n          </tbody>\n        </table>\n      </div>\n\n      <div class=\"thinking\">\n        保守業務からAI基盤化の対象を抽出し、<strong>200h/月</strong>を初期対象とする。<br>\n        削減目標150hに対し、人の確認・AI基盤の保守を考慮して、約1.3倍の200hをAI化対象とする。\n      </div>\n\n      <div class=\"message\">\n        問い合わせ対応と影響調査を中心にAI基盤化することで、1名分150hの削減は十分に狙える。\n      </div>\n    </section>\n\n        <div class=\"footer-right\">05</div>\n  </main>\n</body>\n</html>","script":"次に、私が担当している3名体制の保守プロジェクトをモデルケースとして説明します。\n\nここでは、前のスライドで示した「保守工数の3分の1削減」が、どの程度現実的かを見ていきます。\n\n3名体制の場合、月間工数は450時間です。ここから1名分にあたる150時間の削減を目標とします。\n\n業務を分解すると、問い合わせ対応が120時間、影響調査・仕様調査が80時間あります。この合計200時間を、AI基盤化の初期対象とします。\n\nこれらの業務では、仕様書や過去の問い合わせ履歴、障害履歴など、保守現場に蓄積された情報を活用できます。\n\nこのモデルケースで想定するAI基盤では、これらの情報を検索可能な形で整理し、RAGで関連情報を参照します。\n\nそのうえで、問い合わせの回答案や根拠資料、影響調査の確認対象、テスト観点を提示します。\n\n削減したい150時間ぴったりではなく、ひとのかくにんやAI基盤自体の保守も考慮して、約1.3倍の200時間を対象にしています。\n\n200時間をAI基盤化の対象にできれば、1名分150時間の削減は十分に狙えます。\n\nこれが、保守工数の3分の1を削減対象とした根拠です。","point":"前ページの“1/3削減”の根拠として説明する。200h対象→150h削減の流れを伝える。","speechText":"次に、私が担当している3名体制の保守プロジェクトをモデルケースとして説明します。\n\nここでは、前のスライドで示した「保守工数の3分の1削減」が、どの程度現実的かを見ていきます。\n\n3名体制の場合、月間工数は450時間です。ここから1名分にあたる150時間の削減を目標とします。\n\n業務を分解すると、問い合わせ対応が120時間、影響調査・仕様調査が80時間あります。この合計200時間を、AI基盤化の初期対象とします。\n\nこれらの業務では、仕様書や過去の問い合わせ履歴、障害履歴など、保守現場に蓄積された情報を活用できます。\n\nこのモデルケースで想定するAI基盤では、これらの情報を検索可能な形で整理し、RAGで関連情報を参照します。\n\nそのうえで、問い合わせの回答案や根拠資料、影響調査の確認対象、テスト観点を提示します。\n\n削減したい150時間ぴったりではなく、ひとのかくにんやAI基盤自体の保守も考慮して、約1.3倍の200時間を対象にしています。\n\n200時間をAI基盤化の対象にできれば、1名分150時間の削減は十分に狙えます。\n\nこれが、保守工数の3分の1を削減対象とした根拠です。"},{"title":"他ベンダー領域への展開","srcdoc":"<!DOCTYPE html>\n<html lang=\"ja\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>他ベンダー領域への展開</title>\n  <style>\n    :root {\n      --bg: #f4f7fb;\n      --ink: #0f172a;\n      --muted: #475569;\n      --blue: #2563eb;\n      --blue-dark: #1d4ed8;\n      --blue-soft: #eaf2ff;\n      --green: #0f766e;\n      --red: #b91c1c;\n      --red-soft: #fee2e2;\n      --navy: #0f3153;\n      --line: #d7e0ea;\n    }\n\n    * { box-sizing: border-box; }\n\n    body {\n      margin: 0;\n      background: #e6edf5;\n      font-family: \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Meiryo, sans-serif;\n      color: var(--ink);\n    }\n\n    .slide {\n      width: 1280px;\n      height: 720px;\n      margin: 0 auto;\n      background: var(--bg);\n      padding: 22px 32px 24px;\n      position: relative;\n      overflow: hidden;\n    }\n\n    .pagehead {\n      font-size: 14px;\n      font-weight: 800;\n      color: var(--blue);\n      margin-bottom: 6px;\n      letter-spacing: .02em;\n    }\n\n    h1 {\n      margin: 0;\n      font-size: 33px;\n      line-height: 1.14;\n      letter-spacing: -.02em;\n      color: var(--ink);\n    }\n\n    .subtitle {\n      margin-top: 6px;\n      color: var(--blue);\n      font-size: 21px;\n      font-weight: 850;\n      line-height: 1.2;\n    }\n\n    .content {\n      width: 90%;\n      margin: 15px auto 0;\n      display: flex;\n      flex-direction: column;\n      gap: 8px;\n    }\n\n    .intro {\n      width: 86%;\n      margin: 0 auto;\n      background: #ffffff;\n      border: 1px solid var(--line);\n      border-radius: 14px;\n      padding: 12px 18px;\n      box-shadow: 0 2px 8px rgba(15, 23, 42, .04);\n      text-align: left;\n    }\n\n    .intro-text {\n      font-size: 17px;\n      line-height: 1.45;\n      font-weight: 760;\n      color: #1e293b;\n    }\n\n    .lead-text {\n      width: 100%;\n      font-size: 16px;\n      line-height: 1.45;\n      font-weight: 700;\n      color: #1e293b;\n      text-align: left;\n      margin-top: -2px;\n    }\n\n    .swot {\n      display: grid;\n      grid-template-columns: 1fr 1fr;\n      gap: 10px;\n    }\n\n    .card {\n      border-radius: 15px;\n      padding: 12px 16px;\n      min-height: 116px;\n      box-shadow: 0 2px 8px rgba(15, 23, 42, .04);\n      border: 1px solid var(--line);\n      background: #fff;\n    }\n\n    .card-head {\n      display: flex;\n      align-items: center;\n      gap: 8px;\n      margin-bottom: 7px;\n    }\n\n    .code {\n      width: 30px;\n      height: 30px;\n      border-radius: 9px;\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      color: #fff;\n      font-size: 17px;\n      font-weight: 950;\n      flex: 0 0 auto;\n    }\n\n    .card-title {\n      font-size: 16px;\n      line-height: 1.2;\n      font-weight: 900;\n    }\n\n    .card-text {\n      font-size: 15px;\n      line-height: 1.42;\n      font-weight: 700;\n      color: #1e293b;\n    }\n\n    .strength .code { background: var(--blue); }\n    .strength .card-title { color: var(--blue-dark); }\n\n    .weakness .code { background: #64748b; }\n    .weakness .card-title { color: #334155; }\n\n    .opportunity .code { background: var(--green); }\n    .opportunity .card-title { color: var(--green); }\n\n    .threat {\n      background: var(--red-soft);\n      border-color: #fecaca;\n    }\n    .threat .code { background: var(--red); }\n    .threat .card-title { color: var(--red); }\n\n    .small-arrow {\n      text-align: center;\n      font-size: 24px;\n      line-height: 1;\n      font-weight: 900;\n      color: #8b9ab5;\n      margin: -2px 0 -2px;\n    }\n\n    .insight {\n      background: #fff;\n      border-left: 7px solid var(--blue);\n      border-top: 1px solid var(--line);\n      border-right: 1px solid var(--line);\n      border-bottom: 1px solid var(--line);\n      border-radius: 14px;\n      padding: 12px 18px;\n      font-size: 16px;\n      line-height: 1.45;\n      font-weight: 760;\n      color: #1e293b;\n      box-shadow: 0 2px 8px rgba(15, 23, 42, .04);\n      text-align: center;\n    }\n\n    .insight strong {\n      color: var(--blue-dark);\n      font-weight: 950;\n    }\n\n    .message {\n      background: var(--navy);\n      color: #fff;\n      border-radius: 14px;\n      padding: 12px 20px;\n      text-align: center;\n      font-size: 21px;\n      line-height: 1.36;\n      font-weight: 950;\n      box-shadow: 0 6px 18px rgba(15, 49, 83, .14);\n    }\n\n    .message strong {\n      color: #dbeafe;\n      font-weight: 950;\n    }\n\n    .footer-left, .footer-right {\n      position: absolute;\n      bottom: 8px;\n      color: #64748b;\n      font-size: 11px;\n      font-weight: 700;\n    }\n\n    .footer-left { left: 32px; }\n    .footer-right { right: 24px; }\n  </style>\n</head>\n<body>\n  <main class=\"slide\">\n    <div class=\"pagehead\">06 / ② 他ベンダー領域への展開</div>\n    <h1>他ベンダー領域への展開</h1>\n    <div class=\"subtitle\">AI時代の保守費削減を、守りではなく攻めの提案に変える</div>\n\n    <section class=\"content\">\n      <div class=\"lead-text\">\n        私の保守プロジェクトを題材に、今のAI時代における現行保守の位置づけを整理する。\n      </div>\n\n      <div class=\"swot\">\n        <div class=\"card strength\">\n          <div class=\"card-head\">\n            <div class=\"code\">S</div>\n            <div class=\"card-title\">Strength：強み</div>\n          </div>\n          <div class=\"card-text\">\n            保守対象の業務・システム・運用を理解しており、仕様書・障害履歴・対応履歴などの保守ナレッジを持っている。\n          </div>\n        </div>\n\n        <div class=\"card weakness\">\n          <div class=\"card-head\">\n            <div class=\"code\">W</div>\n            <div class=\"card-title\">Weakness：弱み</div>\n          </div>\n          <div class=\"card-text\">\n            保守ナレッジが属人化し、人月中心の契約では、その知見や改善価値が見えにくい。\n          </div>\n        </div>\n\n        <div class=\"card opportunity\">\n          <div class=\"card-head\">\n            <div class=\"code\">O</div>\n            <div class=\"card-title\">Opportunity：機会</div>\n          </div>\n          <div class=\"card-text\">\n            AI活用により、保守ナレッジを業務改善や保守費削減提案につなげられる。\n          </div>\n        </div>\n\n        <div class=\"card threat\">\n          <div class=\"card-head\">\n            <div class=\"code\">T</div>\n            <div class=\"card-title\">Threat：脅威</div>\n          </div>\n          <div class=\"card-text\">\n            顧客や他社が先にAI活用による業務改善を進めると、既存保守売上が減額対象になる。\n          </div>\n        </div>\n      </div>\n\n      <div class=\"small-arrow\">↓</div>\n\n      <div class=\"insight\">\n        この整理自体は、保守プロジェクトであれば自然に出てくる当たり前の内容である。<br>\n        重要なのは、<strong>AI活用による保守費削減が、既存保守売上にとって脅威になる</strong>という点である。\n      </div>\n\n      <div class=\"message\">\n        AI活用による保守費削減は、既存保守売上にとって脅威になる。<br>\n        だからこそ、<strong>AI基盤構築の実績を作り、我々が保守費削減を提案する側に回る。</strong>\n      </div>\n    </section>\n\n        <div class=\"footer-right\">06</div>\n  </main>\n</body>\n</html>","script":"ここまでは、1つ目の軸である、AI基盤構築による売上15％向上について説明しました。\n\n次に、2つ目の軸である、他ベンダー領域への展開です。\n\nここからは、この取り組みを自社保守だけで終わらせず、他ベンダー領域へ広げる考え方を説明します。\n\nこのスライドでは、私が担当する保守プロジェクトをSWOT分析しています。\n\n分析結果自体は、保守プロジェクトであれば自然に出てくる内容です。\n\nその中で注目していただきたいのは、顧客や他社が先にAI活用を進めると、保守費削減が当社にとっての脅威になるという点です。\n\n一方で、当社がAI基盤構築の実績を作ることができれば、この脅威を逆に機会へ変えることができます。\n\nその実績をもとに、他ベンダーが担当する保守領域へ提案を広げることで、今度は当社が他社にとっての脅威となり、新たな売上機会を作ることができます。\n\nAI活用による保守費削減を、攻めの提案に変えるという考え方です。","point":"提言の軸の2つ目に移ったことを先に伝える。","speechText":"ここまでは、1つ目の軸である、AI基盤構築による売上15％向上について説明しました。\n\n次に、2つ目の軸である、たベンダー領域への展開です。\n\nここからは、この取り組みを自社保守だけで終わらせず、たベンダー領域へ広げる考え方を説明します。\n\nこのスライドでは、私が担当する保守プロジェクトをSWOT分析しています。\n\n分析結果自体は、保守プロジェクトであれば自然に出てくる内容です。\n\nその中で注目していただきたいのは、顧客や他社が先にAI活用を進めると、保守費削減が当社にとっての脅威になるという点です。\n\n一方で、当社がAI基盤構築の実績を作ることができれば、この脅威を逆に機会へ変えることができます。\n\nその実績をもとに、たベンダーが担当する保守領域へ提案を広げることで、今度は当社が他社にとっての脅威となり、新たな売上機会を作ることができます。\n\nAI活用による保守費削減を、攻めの提案に変えるという考え方です。"},{"title":"保守メンバーの役割の高次元化","srcdoc":"<!DOCTYPE html>\n<html lang=\"ja\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>保守メンバーの役割の高次元化</title>\n  <style>\n    :root {\n      --bg: #f4f7fb;\n      --ink: #0f172a;\n      --muted: #475569;\n      --blue: #2563eb;\n      --blue-dark: #1d4ed8;\n      --blue-soft: #eaf2ff;\n      --teal-soft: #d9eeee;\n      --navy: #0f3153;\n      --line: #d7e0ea;\n      --gray: #f3f4f6;\n      --green: #0f766e;\n      --green-soft: #e2f3ef;\n    }\n\n    * { box-sizing: border-box; }\n\n    body {\n      margin: 0;\n      background: #e6edf5;\n      font-family: \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Meiryo, sans-serif;\n      color: var(--ink);\n    }\n\n    .slide {\n      width: 1280px;\n      height: 720px;\n      margin: 0 auto;\n      background: var(--bg);\n      padding: 22px 32px 24px;\n      position: relative;\n      overflow: hidden;\n    }\n\n    .pagehead {\n      font-size: 14px;\n      font-weight: 800;\n      color: var(--blue);\n      margin-bottom: 6px;\n      letter-spacing: .02em;\n    }\n\n    h1 {\n      margin: 0;\n      font-size: 33px;\n      line-height: 1.14;\n      letter-spacing: -.02em;\n      color: var(--ink);\n    }\n\n    .subtitle {\n      margin-top: 6px;\n      color: var(--blue);\n      font-size: 21px;\n      font-weight: 850;\n      line-height: 1.2;\n    }\n\n    .content {\n      width: 90%;\n      margin: 15px auto 0;\n      display: flex;\n      flex-direction: column;\n      gap: 10px;\n    }\n\n    .lead {\n      background: #ffffff;\n      border-left: 7px solid var(--blue);\n      border-top: 1px solid var(--line);\n      border-right: 1px solid var(--line);\n      border-bottom: 1px solid var(--line);\n      border-radius: 14px;\n      padding: 13px 18px;\n      font-size: 17px;\n      line-height: 1.5;\n      font-weight: 780;\n      color: #1e293b;\n      box-shadow: 0 2px 8px rgba(15, 23, 42, .04);\n    }\n\n    .lead strong {\n      color: var(--blue-dark);\n      font-weight: 950;\n    }\n\n    .role-table {\n      background: #fff;\n      border: 1px solid var(--line);\n      border-radius: 16px;\n      padding: 10px 10px 9px;\n      box-shadow: 0 2px 8px rgba(15, 23, 42, .04);\n    }\n\n    table {\n      width: 100%;\n      border-collapse: collapse;\n      table-layout: fixed;\n      font-size: 16px;\n      line-height: 1.35;\n    }\n\n    th {\n      padding: 10px 12px;\n      border: 1px solid #cbd8eb;\n      font-size: 16px;\n      font-weight: 900;\n      text-align: left;\n    }\n\n    th.current {\n      background: #f3f4f6;\n      color: #334155;\n      width: 40%;\n    }\n\n    th.next {\n      background: #eaf2ff;\n      color: var(--blue-dark);\n      width: 55%;\n    }\n\n    th.arrow-head {\n      width: 5%;\n      background: #f8fafc;\n      color: #64748b;\n      text-align: center;\n    }\n\n    td {\n      border: 1px solid #d9e2ef;\n      padding: 8px 10px;\n      vertical-align: middle;\n      font-weight: 720;\n      color: #1e293b;\n      background: #ffffff;\n    }\n\n    td.current-cell {\n      background: #ffffff;\n    }\n\n    td.arrow-cell {\n      text-align: center;\n      color: #94a3b8;\n      font-size: 22px;\n      font-weight: 950;\n      background: #f8fafc;\n    }\n\n    td.next-cell {\n      background: #f8fbff;\n      font-weight: 820;\n    }\n\n    td.next-cell strong {\n      color: var(--blue-dark);\n      font-weight: 950;\n    }\n\n    .effect {\n      background: var(--green-soft);\n      border: 1px solid #bdded6;\n      border-radius: 14px;\n      padding: 10px 18px;\n      font-size: 15px;\n      line-height: 1.45;\n      font-weight: 800;\n      color: #134e4a;\n      box-shadow: 0 2px 8px rgba(15, 23, 42, .04);\n      text-align: center;\n    }\n\n    .effect-label {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      padding: 4px 13px;\n      border-radius: 999px;\n      font-size: 13px;\n      font-weight: 850;\n      color: var(--green);\n      background: #ffffff;\n      margin-right: 10px;\n    }\n\n    .message {\n      background: var(--navy);\n      color: #fff;\n      border-radius: 14px;\n      padding: 12px 20px;\n      text-align: center;\n      font-size: 22px;\n      line-height: 1.3;\n      font-weight: 950;\n      box-shadow: 0 6px 18px rgba(15, 49, 83, .14);\n    }\n\n    .footer-left, .footer-right {\n      position: absolute;\n      bottom: 8px;\n      color: #64748b;\n      font-size: 11px;\n      font-weight: 700;\n    }\n\n    .footer-left { left: 32px; }\n    .footer-right { right: 24px; }\n  </style>\n</head>\n<body>\n  <main class=\"slide\">\n    <div class=\"pagehead\">07 / ③ 保守メンバーの役割の高次元化</div>\n    <h1>保守メンバーの役割の高次元化</h1>\n    <div class=\"subtitle\">AI基盤構築を通じて、作業担当から改善提案を担う人材へ変える</div>\n\n    <section class=\"content\">\n      <div class=\"lead\">\n        <strong>AI基盤構築には、現行保守メンバーの協力が必要不可欠である。</strong><br>\n        AIに任せる範囲、人が判断する範囲、ナレッジの使い方を整理することで、保守メンバーの役割を高次元化する機会になる。\n      </div>\n\n      <div class=\"role-table\">\n        <table>\n          <thead>\n            <tr>\n              <th class=\"current\">現在の役割</th>\n              <th class=\"arrow-head\"></th>\n              <th class=\"next\">今後の役割</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td class=\"current-cell\">問い合わせに回答する</td>\n              <td class=\"arrow-cell\">→</td>\n              <td class=\"next-cell\">問い合わせ内容を整理し、<strong>AI回答・ナレッジ化</strong>につなげる</td>\n            </tr>\n            <tr>\n              <td class=\"current-cell\">障害対応を行う</td>\n              <td class=\"arrow-cell\">→</td>\n              <td class=\"next-cell\">障害履歴を整理し、<strong>再発防止や改善提案</strong>につなげる</td>\n            </tr>\n            <tr>\n              <td class=\"current-cell\">影響調査を行う</td>\n              <td class=\"arrow-cell\">→</td>\n              <td class=\"next-cell\">調査観点を整理し、<strong>AI基盤に組み込む</strong></td>\n            </tr>\n            <tr>\n              <td class=\"current-cell\">定型作業を実施する</td>\n              <td class=\"arrow-cell\">→</td>\n              <td class=\"next-cell\">定型作業を<strong>AI・自動化の対象</strong>として整理する</td>\n            </tr>\n          </tbody>\n        </table>\n      </div>\n\n      <div class=\"message\">\n        保守メンバーを、作業担当から改善提案を担う人材へ高次元化する。\n      </div>\n\n      <div class=\"effect\">\n        <span class=\"effect-label\">副次効果</span>\n        保守メンバーの役割を高次元化することで、成長実感とモチベーションを高め、離職リスクの低減にもつなげる。\n      </div>\n    </section>\n\n        <div class=\"footer-right\">07</div>\n  </main>\n</body>\n</html>","script":"次に、3つ目の軸である、保守メンバーの役割の高次元化です。\n\nAI基盤構築による保守費削減を、単なる要員削減で終わらせず、現行保守メンバーの成長にもつなげます。\n\nAIに任せる範囲、ひとが判断する範囲、どのナレッジを使うかは、保守現場を理解している人でなければ整理できません。\n\nそのため、AI基盤構築には現行保守メンバーの協力が必要です。\n\nこれまでの問い合わせ対応や障害対応といった作業中心の役割から、ナレッジ化、再発防止、調査観点の整理、自動化対象の選定を担う役割へ変えていきます。\n\nつまり、保守メンバーを、作業担当から改善提案を担う人材へ高次元化します。\n\nこれは成長実感やモチベーション向上につながり、離職リスクの低減も期待できます。","point":"提言の軸の3つ目に移ったことを先に伝える。","speechText":"次に、3つ目の軸である、保守メンバーの役割の高次元化です。\n\nAI基盤構築による保守費削減を、単なる要員削減で終わらせず、現行保守メンバーの成長にもつなげます。\n\nAIに任せる範囲、ひとが判断する範囲、どのナレッジを使うかは、保守現場を理解している人でなければ整理できません。\n\nそのため、AI基盤構築には現行保守メンバーの協力が必要です。\n\nこれまでの問い合わせ対応や障害対応といった作業中心の役割から、ナレッジ化、再発防止、調査観点の整理、自動化対象の選定を担う役割へ変えていきます。\n\nつまり、保守メンバーを、作業担当から改善提案を担う人材へ高次元化します。\n\nこれは成長実感やモチベーション向上につながり、離職リスクの低減も期待できます。"},{"title":"まとめ","srcdoc":"<!DOCTYPE html>\n<html lang=\"ja\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>まとめ</title>\n  <style>\n    :root {\n      --bg: #f4f7fb;\n      --ink: #0f172a;\n      --muted: #475569;\n      --blue: #2563eb;\n      --blue-dark: #1d4ed8;\n      --blue-soft: #eaf2ff;\n      --blue-mid: #c7d8ff;\n      --navy: #0f3153;\n      --line: #d7e0ea;\n      --gray: #f8fafc;\n    }\n\n    * { box-sizing: border-box; }\n\n    body {\n      margin: 0;\n      background: #e6edf5;\n      font-family: \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Meiryo, sans-serif;\n      color: var(--ink);\n    }\n\n    .slide {\n      width: 1280px;\n      height: 720px;\n      margin: 0 auto;\n      background: var(--bg);\n      padding: 22px 32px 24px;\n      position: relative;\n      overflow: hidden;\n    }\n\n    .pagehead {\n      font-size: 14px;\n      font-weight: 800;\n      color: var(--blue);\n      margin-bottom: 6px;\n      letter-spacing: .02em;\n    }\n\n    h1 {\n      margin: 0;\n      font-size: 34px;\n      line-height: 1.14;\n      letter-spacing: -.02em;\n      color: var(--ink);\n    }\n\n    .subtitle {\n      margin-top: 8px;\n      color: var(--blue);\n      font-size: 22px;\n      font-weight: 850;\n      line-height: 1.25;\n    }\n\n    .content {\n      width: 88%;\n      margin: 22px auto 0;\n      display: flex;\n      flex-direction: column;\n      gap: 12px;\n    }\n\n    .axis-wrap {\n      background: #fff;\n      border: 1px solid var(--line);\n      border-radius: 18px;\n      padding: 12px 14px;\n      box-shadow: 0 2px 8px rgba(15, 23, 42, .04);\n    }\n\n    table {\n      width: 100%;\n      border-collapse: collapse;\n      table-layout: fixed;\n      font-size: 17px;\n      line-height: 1.45;\n    }\n\n    th {\n      background: #eaf2ff;\n      color: var(--blue-dark);\n      padding: 10px 14px;\n      border: 1px solid #cbd8eb;\n      font-weight: 900;\n      text-align: left;\n    }\n\n    th:first-child {\n      width: 32%;\n    }\n\n    td {\n      border: 1px solid #d9e2ef;\n      padding: 12px 14px;\n      vertical-align: middle;\n      font-weight: 730;\n      color: #1e293b;\n      background: #ffffff;\n    }\n\n    .axis {\n      color: var(--blue-dark);\n      font-weight: 950;\n    }\n\n    .tag-row {\n      text-align: left;\n      margin-bottom: -9px;\n    }\n\n    .message-tag {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: fit-content;\n      padding: 5px 14px;\n      border-radius: 999px;\n      font-size: 13px;\n      line-height: 1;\n      font-weight: 900;\n      margin: 0;\n      letter-spacing: .01em;\n    }\n\n    .tag-blue {\n      background: #dbeafe;\n      color: #1d4ed8;\n      border: 1px solid #bfdbfe;\n    }\n\n    .tag-white {\n      background: rgba(255,255,255,.12);\n      color: #dbeafe;\n      border: 1px solid rgba(219,234,254,.28);\n    }\n\n    .bridge {\n      background: linear-gradient(180deg, #eef5ff 0%, #e4efff 100%);\n      border: 1px solid #c7d8f7;\n      border-radius: 18px;\n      padding: 18px 24px;\n      text-align: center;\n      font-size: 22px;\n      line-height: 1.45;\n      font-weight: 900;\n      color: #0f172a;\n      box-shadow: 0 2px 8px rgba(15, 23, 42, .04);\n    }\n\n    .bridge strong {\n      font-weight: 950;\n    }\n\n    .bridge .threat-word {\n      color: #D64545;\n    }\n\n    .bridge .opportunity-word {\n      color: var(--blue-dark);\n    }\n\n    .final {\n      background: var(--navy);\n      color: #fff;\n      border-radius: 20px;\n      padding: 20px 28px;\n      text-align: center;\n      box-shadow: 0 7px 20px rgba(15, 49, 83, .16);\n    }\n\n    .final-main {\n      font-size: 30px;\n      line-height: 1.22;\n      font-weight: 950;\n      margin-bottom: 10px;\n      letter-spacing: .02em;\n    }\n\n    .final-sub {\n      font-size: 23px;\n      line-height: 1.45;\n      font-weight: 850;\n      color: #dbeafe;\n    }\n\n    .footer-left, .footer-right {\n      position: absolute;\n      bottom: 8px;\n      color: #64748b;\n      font-size: 11px;\n      font-weight: 700;\n    }\n\n    .footer-left { left: 32px; }\n    .footer-right { right: 24px; }\n  </style>\n</head>\n<body>\n  <main class=\"slide\">\n    <div class=\"pagehead\">08 / まとめ</div>\n    <h1>まとめ</h1>\n    <div class=\"subtitle\">保守から新たな価値を生み出し、当社のブランド価値を高める</div>\n\n    <section class=\"content\">\n      <div class=\"axis-wrap\">\n        <table>\n          <thead>\n            <tr>\n              <th>提言の軸</th>\n              <th>内容</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td class=\"axis\">① AI基盤構築の売上化</td>\n              <td>保守費削減効果をもとに、AI基盤構築案件として売上化する</td>\n            </tr>\n            <tr>\n              <td class=\"axis\">② 他ベンダー領域への展開</td>\n              <td>AI基盤構築の実績を基に、他ベンダー領域へ保守費削減提案を広げる</td>\n            </tr>\n            <tr>\n              <td class=\"axis\">③ 保守メンバーの役割の高次元化</td>\n              <td>保守メンバーを、作業担当から改善提案を担う人材へ高次元化する</td>\n            </tr>\n          </tbody>\n        </table>\n      </div>\n\n      <div class=\"tag-row\">\n        <div class=\"message-tag tag-blue\">AI基盤構築の売上化によって</div>\n      </div>\n      <div class=\"bridge\">\n        AIの普及で高まる保守費削減の <strong class=\"threat-word\">脅威</strong> を、<br>\n        <strong class=\"opportunity-word\">売上15％向上</strong> につながる <strong class=\"opportunity-word\">機会</strong> に変える。\n      </div>\n\n      <div class=\"tag-row\">\n        <div class=\"message-tag tag-blue\">他ベンダー領域への展開と保守メンバーの役割の高次元化によって</div>\n      </div>\n      <div class=\"final\">\n        <div class=\"final-main\">AI活用が前提となる時代、保守を攻めの起点にする。</div>\n        <div class=\"final-sub\">\n          保守から新たな価値を生み出し、当社のブランド価値を高める。\n        </div>\n      </div>\n    </section>\n\n        <div class=\"footer-right\">08</div>\n  </main>\n</body>\n</html>","script":"最後にまとめです。\n\n今回の提言の軸は3つです。\n\n1つ目は、保守費削減効果をもとにした、AI基盤構築の売上化です。\n\n2つ目は、自社保守で作った実績をもとにした、他ベンダー領域への展開です。\n\n3つ目は、保守メンバーを作業担当から改善提案を担う人材へ高次元化することです。\n\nAIの普及による保守費削減は、既存保守売上にとって脅威です。\n\nしかし、当社からAI基盤構築を提案できれば、その脅威を売上15％向上につながる機会に変えることができます。\n\nだからこそ、AI活用が前提となる時代、保守を攻めの起点にする。\n\n保守から新たな価値を生み出し、当社のブランド価値を高める。\n\n以上が私の提言です。ご清聴ありがとうございました。","point":"最後に売上15％向上とブランド価値を回収する。","speechText":"最後にまとめです。\n\n今回の提言の軸は3つです。\n\n1つ目は、保守費削減効果をもとにした、AI基盤構築の売上化です。\n\n2つ目は、自社保守で作った実績をもとにした、たベンダー領域への展開です。\n\n3つ目は、保守メンバーを作業担当から改善提案を担う人材へ高次元化することです。\n\nAIの普及による保守費削減は、既存保守売上にとって脅威です。\n\nしかし、当社からAI基盤構築を提案できれば、その脅威を売上15％向上につながる機会に変えることができます。\n\nだからこそ、AI活用が前提となる時代、保守を攻めの起点にする。\n\n保守から新たな価値を生み出し、当社のブランド価値を高める。\n\n以上が私の提言です。ご清聴ありがとうございました。"}];
+let index = 0;
+let channel = null;
+let readMode = false;
+let currentUtterance = null;
+let speechQueue = [];
+let speechPointer = 0;
+let speechTimer = null;
+let selectedVoice = null;
+
+function getMode() {
+  const params = new URLSearchParams(location.search);
+  return params.get("mode") || "present";
+}
+function setupChannel() {
+  try {
+    channel = new BroadcastChannel("naoe-vm-presentation-sync");
+    channel.onmessage = (event) => {
+      if (event.data && event.data.type === "slide-change") {
+        if (event.data.index !== index) {
+          index = event.data.index;
+          render(false);
+        }
+      }
+    };
+  } catch(e) {}
+  window.addEventListener("storage", (e) => {
+    if (e.key === "naoe-vm-slide-index") {
+      const nextIndex = Number(e.newValue);
+      if (!Number.isNaN(nextIndex) && nextIndex !== index) {
+        index = nextIndex;
+        render(false);
+      }
+    }
+  });
+}
+function broadcast() {
+  try { localStorage.setItem("naoe-vm-slide-index", String(index)); } catch(e) {}
+  if (channel) channel.postMessage({ type: "slide-change", index });
+}
+function setIndex(nextIndex, shouldBroadcast=true) {
+  index = Math.max(0, Math.min(slides.length - 1, nextIndex));
+  render(shouldBroadcast);
+}
+function next() { setIndex(index + 1); }
+function prev() { setIndex(index - 1); }
+function updateReadButton() {
+  const btn = document.getElementById("readBtn");
+  if (btn) btn.textContent = readMode ? "停止" : "読上";
+}
+
+function pickJapaneseVoice() {
+  if (!("speechSynthesis" in window)) return null;
+  const voices = window.speechSynthesis.getVoices() || [];
+  if (!voices.length) return null;
+
+  const preferredNames = [
+    "Microsoft Nanami", "Microsoft Keita", "Google 日本語", "Google Japanese",
+    "Kyoko", "Otoya", "Haruka", "Ichiro"
+  ];
+
+  for (const name of preferredNames) {
+    const found = voices.find(v => (v.name || "").includes(name));
+    if (found) return found;
+  }
+
+  return voices.find(v => (v.lang || "").toLowerCase().startsWith("ja")) || null;
+}
+
+function makeSpeechChunks(rawText) {
+  const text = (rawText || "")
+    .replace(/\r/g, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/「/g, "「")
+    .replace(/」/g, "」");
+
+  const paragraphs = text.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+  const chunks = [];
+
+  for (const paragraph of paragraphs) {
+    const sentences = paragraph
+      .replace(/([。！？])/g, "$1|")
+      .split("|")
+      .map(s => s.trim())
+      .filter(Boolean);
+
+    for (const sentence of sentences) {
+      if (sentence.length > 120) {
+        const parts = sentence
+          .replace(/、/g, "、|")
+          .split("|")
+          .map(s => s.trim())
+          .filter(Boolean);
+        for (const part of parts) {
+          chunks.push({ text: part, pause: 180 });
+        }
+      } else {
+        chunks.push({ text: sentence, pause: 260 });
+      }
+    }
+    if (chunks.length) chunks[chunks.length - 1].pause = 520;
+  }
+
+  return chunks;
+}
+
+function stopReadAloud() {
+  readMode = false;
+  speechQueue = [];
+  speechPointer = 0;
+  if (speechTimer) {
+    clearTimeout(speechTimer);
+    speechTimer = null;
+  }
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  updateReadButton();
+}
+
+function speakNextChunk() {
+  if (!readMode) return;
+
+  if (speechPointer >= speechQueue.length) {
+    if (index < slides.length - 1) {
+      speechTimer = setTimeout(() => {
+        setIndex(index + 1);
+      }, 650);
+    } else {
+      stopReadAloud();
+    }
+    return;
+  }
+
+  const chunk = speechQueue[speechPointer++];
+  currentUtterance = new SpeechSynthesisUtterance(chunk.text);
+  currentUtterance.lang = "ja-JP";
+  currentUtterance.voice = selectedVoice || pickJapaneseVoice();
+  currentUtterance.rate = 0.88;
+  currentUtterance.pitch = 1.04;
+  currentUtterance.volume = 1.0;
+
+  currentUtterance.onend = () => {
+    if (!readMode) return;
+    speechTimer = setTimeout(speakNextChunk, chunk.pause);
+  };
+
+  currentUtterance.onerror = () => {
+    if (!readMode) return;
+    speechTimer = setTimeout(speakNextChunk, 250);
+  };
+
+  window.speechSynthesis.speak(currentUtterance);
+}
+
+function speakCurrentSlide() {
+  if (!("speechSynthesis" in window)) {
+    alert("このブラウザでは読み上げ機能が利用できません。");
+    stopReadAloud();
+    return;
+  }
+
+  if (speechTimer) {
+    clearTimeout(speechTimer);
+    speechTimer = null;
+  }
+
+  window.speechSynthesis.cancel();
+  selectedVoice = pickJapaneseVoice();
+
+  const text = slides[index].speechText || slides[index].script || "";
+  speechQueue = makeSpeechChunks(text);
+  speechPointer = 0;
+  speakNextChunk();
+}
+
+function toggleReadAloud() {
+  if (!readMode) {
+    readMode = true;
+    updateReadButton();
+    speakCurrentSlide();
+  } else {
+    stopReadAloud();
+  }
+}
+function keyboard(e) {
+  const key = e.key;
+  if (["ArrowRight","ArrowDown"," ","PageDown","Enter"].includes(key)) { e.preventDefault(); next(); }
+  if (["ArrowLeft","ArrowUp","PageUp","Backspace"].includes(key)) { e.preventDefault(); prev(); }
+  if (key.toLowerCase() === "f") {
+    e.preventDefault();
+    const el = document.documentElement;
+    if (!document.fullscreenElement && el.requestFullscreen) el.requestFullscreen();
+  }
+  if (key.toLowerCase() === "r" && getMode() !== "notes") { e.preventDefault(); toggleReadAloud(); }
+  if (key === "Home") { e.preventDefault(); setIndex(0); }
+  if (key === "End") { e.preventDefault(); setIndex(slides.length - 1); }
+}
+function renderPresent() {
+  document.body.className = "present-body";
+  document.body.innerHTML = `
+    <main class="stage">
+      <div class="frame-wrap" id="frameWrap"><iframe id="slideFrame" title="presentation slide"></iframe></div>
+    </main>
+    <div class="hud">
+      <button class="btn" id="prevBtn">← 前へ</button>
+      <span id="counter"></span>
+      <button class="btn" id="nextBtn">次へ →</button>
+      <button class="btn" id="fullBtn">全画面</button>
+      <button class="btn" id="notesBtn">原稿</button>
+      <button class="btn" id="readBtn">読上</button>
+      <span>Space / ← → / F / R</span>
+    </div>
+    <div class="progress" id="progress"></div>`;
+  document.getElementById("prevBtn").onclick = prev;
+  document.getElementById("nextBtn").onclick = next;
+  document.getElementById("fullBtn").onclick = () => {
+    const el = document.documentElement;
+    if (!document.fullscreenElement && el.requestFullscreen) el.requestFullscreen();
+  };
+  document.getElementById("notesBtn").onclick = () => {
+    const baseUrl = location.href.split("?")[0];
+    window.open(baseUrl + "?mode=notes", "naoe-vm-notes");
+  };
+  document.getElementById("readBtn").onclick = toggleReadAloud;
+  updateReadButton();
+  document.addEventListener("click", (e) => {
+    if (e.target.closest(".hud")) return;
+    if (e.clientX > window.innerWidth / 2) next(); else prev();
+  });
+  updatePresent();
+}
+function scaleFrame() {
+  const wrap = document.getElementById("frameWrap");
+  const frame = document.getElementById("slideFrame");
+  if (!wrap || !frame) return;
+  const s = Math.min(wrap.clientWidth / 1280, wrap.clientHeight / 720);
+  frame.style.transform = `scale(${s})`;
+}
+function updatePresent() {
+  const frame = document.getElementById("slideFrame");
+  if (!frame) return;
+  frame.srcdoc = slides[index].srcdoc;
+  document.getElementById("counter").textContent = `${index + 1} / ${slides.length}`;
+  document.getElementById("progress").style.width = `${((index + 1) / slides.length) * 100}%`;
+  scaleFrame();
+}
+function renderNotes() {
+  document.body.className = "notes-body";
+  document.body.innerHTML = `
+    <main class="notes-wrap">
+      <header class="notes-header">
+        <h1 class="notes-title">発表原稿</h1>
+        <div class="notes-sub"><span id="notesCounter"></span><span id="notesTitle"></span></div>
+      </header>
+      <section class="notes-grid">
+        <aside class="mini">
+          <div class="notes-controls">
+            <button class="notes-btn secondary" id="notesPrev">← 前へ</button>
+            <button class="notes-btn" id="notesNext">次へ →</button>
+          </div>
+          <div class="thumbs" id="thumbs"></div>
+        </aside>
+        <article class="script-card">
+          <div class="script-text" id="scriptText"></div>
+          <div class="point" id="pointText"></div>
+        </article>
+      </section>
+    </main>`;
+  document.getElementById("notesPrev").onclick = prev;
+  document.getElementById("notesNext").onclick = next;
+  const thumbs = document.getElementById("thumbs");
+  slides.forEach((s, i) => {
+    const btn = document.createElement("button");
+    btn.className = "thumb";
+    btn.textContent = i + 1;
+    btn.onclick = () => setIndex(i);
+    thumbs.appendChild(btn);
+  });
+  updateNotes();
+}
+function updateNotes() {
+  const s = slides[index];
+  document.getElementById("notesCounter").textContent = `${index + 1} / ${slides.length}`;
+  document.getElementById("notesTitle").textContent = s.title;
+  document.getElementById("scriptText").textContent = s.script;
+  document.getElementById("pointText").textContent = "話すポイント：" + s.point;
+  document.querySelectorAll(".thumb").forEach((btn, i) => btn.classList.toggle("active", i === index));
+}
+function render(shouldBroadcast=true) {
+  if (getMode() === "notes") updateNotes(); else updatePresent();
+  if (readMode && getMode() !== "notes") speakCurrentSlide(); else updateReadButton();
+  if (shouldBroadcast) broadcast();
+}
+setupChannel();
+if ("speechSynthesis" in window) {
+  window.speechSynthesis.onvoiceschanged = () => {
+    selectedVoice = pickJapaneseVoice();
+  };
+}
+document.addEventListener("keydown", keyboard);
+window.addEventListener("resize", scaleFrame);
+try {
+  const stored = Number(localStorage.getItem("naoe-vm-slide-index"));
+  if (!Number.isNaN(stored)) index = Math.max(0, Math.min(slides.length - 1, stored));
+} catch(e) {}
+if (getMode() === "notes") renderNotes(); else renderPresent();
+</script>
+</body>
+</html>
