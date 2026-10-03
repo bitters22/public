@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>羽生 1泊2日 家族旅行のしおり｜2026.10.11-12</title>
+<style>
+  :root{
+    --ink:#20303c;
+    --muted:#6b7a86;
+    --paper:#fffdf8;
+    --card:#ffffff;
+    --accent:#e97943;
+    --accent2:#3d8b83;
+    --soft:#fff1e7;
+    --soft2:#eaf6f3;
+    --line:#e7e1d9;
+    --shadow:0 10px 28px rgba(42,52,60,.08);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 10% 0%, #fff3e7 0, transparent 30%),
+      radial-gradient(circle at 90% 8%, #eaf8f4 0, transparent 28%),
+      var(--paper);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+    line-height:1.7;
+  }
+  a{color:inherit}
+  .wrap{max-width:920px;margin:0 auto;padding:28px 18px 56px}
+  .hero{
+    position:relative;
+    overflow:hidden;
+    border-radius:28px;
+    padding:34px 28px 30px;
+    background:linear-gradient(135deg,#263c46 0%,#3c7771 100%);
+    color:#fff;
+    box-shadow:var(--shadow);
+  }
+  .hero:after{
+    content:"";
+    position:absolute;
+    width:220px;height:220px;
+    border-radius:50%;
+    right:-50px;top:-80px;
+    background:rgba(255,255,255,.08);
+  }
+  .kicker{font-size:.82rem;letter-spacing:.12em;opacity:.85;font-weight:700}
+  h1{font-size:clamp(1.8rem,5vw,3rem);line-height:1.2;margin:.4rem 0 .8rem}
+  .hero p{margin:.25rem 0;color:#edf7f5}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .chip{
+    border:1px solid rgba(255,255,255,.26);
+    background:rgba(255,255,255,.1);
+    padding:7px 11px;border-radius:999px;font-size:.86rem;
+  }
+  .section{margin-top:28px}
+  .section-title{
+    display:flex;align-items:center;gap:10px;
+    margin:0 0 14px;font-size:1.25rem;
+  }
+  .section-title span{
+    width:36px;height:36px;border-radius:12px;
+    display:grid;place-items:center;background:var(--soft);
+  }
+  .summary-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+  }
+  .mini{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:16px;padding:14px 12px;box-shadow:0 5px 16px rgba(42,52,60,.04);
+  }
+  .mini b{display:block;font-size:.82rem;color:var(--muted);margin-bottom:3px}
+  .mini strong{font-size:.97rem}
+  .day{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:24px;padding:22px;
+    box-shadow:var(--shadow);
+    margin-bottom:18px;
+  }
+  .dayhead{
+    display:flex;justify-content:space-between;align-items:flex-end;gap:12px;
+    border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:8px
+  }
+  .dayhead h2{margin:0;font-size:1.3rem}
+  .dayhead .theme{color:var(--accent2);font-weight:700;font-size:.9rem}
+  .timeline{position:relative;margin-top:12px}
+  .event{
+    position:relative;
+    display:grid;grid-template-columns:88px 20px 1fr;
+    gap:10px;padding:10px 0;
+  }
+  .time{font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
+  .dot{
+    width:12px;height:12px;border-radius:50%;background:var(--accent2);
+    margin-top:7px;position:relative;
+  }
+  .dot:after{
+    content:"";position:absolute;left:5px;top:12px;width:2px;height:calc(100% + 35px);
+    background:#d8e5e2;
+  }
+  .event:last-child .dot:after{display:none}
+  .event h3{margin:0 0 2px;font-size:1.02rem}
+  .event p{margin:2px 0;color:var(--muted);font-size:.93rem}
+  .badge{
+    display:inline-block;margin-top:5px;margin-right:5px;
+    font-size:.75rem;font-weight:700;padding:4px 8px;border-radius:999px;
+    background:var(--soft2);color:#2d7069;
+  }
+  .badge.orange{background:var(--soft);color:#ad552a}
+  .note{
+    border-left:4px solid var(--accent);
+    background:#fff8f2;border-radius:12px;padding:12px 14px;margin-top:12px;
+    font-size:.9rem;color:#5d514a;
+  }
+  .places{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:12px;
+  }
+  .place{
+    border:1px solid var(--line);background:#fff;border-radius:18px;padding:16px;
+  }
+  .place h3{margin:0 0 6px;font-size:1rem}
+  .place p{font-size:.88rem;color:var(--muted);margin:4px 0 12px}
+  .buttons{display:flex;flex-wrap:wrap;gap:8px}
+  .btn{
+    display:inline-block;text-decoration:none;
+    padding:8px 11px;border-radius:10px;
+    background:#f3f5f5;font-size:.82rem;font-weight:700;
+  }
+  .btn.primary{background:var(--accent2);color:white}
+  .checklist{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:8px 14px;
+    background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;
+  }
+  .checklist label{display:flex;gap:9px;align-items:flex-start;font-size:.9rem}
+  input[type=checkbox]{margin-top:5px;accent-color:var(--accent2)}
+  .footer{
+    text-align:center;color:var(--muted);font-size:.8rem;margin-top:32px;
+  }
+  .bigpoint{
+    background:linear-gradient(135deg,#fff5ec,#eef8f5);
+    border:1px solid var(--line);border-radius:18px;padding:16px 18px;
+  }
+  .bigpoint strong{color:#2f6f69}
+
+  .photo-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px;
+  }
+  .photo{
+    margin:0;overflow:hidden;border-radius:16px;background:#f5f5f5;
+    border:1px solid var(--line);
+  }
+  .photo img{
+    width:100%;height:190px;display:block;object-fit:cover;
+  }
+  .photo figcaption{
+    padding:8px 10px;font-size:.76rem;color:var(--muted);background:#fff;
+  }
+  .event-photo{
+    margin:10px 0 2px;border-radius:16px;overflow:hidden;
+    border:1px solid var(--line);background:#f7f7f7;
+  }
+  .event-photo img{
+    width:100%;max-height:340px;display:block;object-fit:cover;
+  }
+  .event-photo figcaption{
+    padding:7px 10px;background:#fff;color:var(--muted);font-size:.75rem;
+  }
+  .two-photos{
+    display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;
+  }
+  .two-photos .event-photo{margin:0}
+
+  @media (max-width:680px){
+    .wrap{padding:14px 12px 42px}
+    .hero{padding:26px 20px;border-radius:22px}
+    .summary-grid{grid-template-columns:repeat(2,1fr)}
+    .places{grid-template-columns:1fr}
+    .photo-grid{grid-template-columns:1fr 1fr}
+    .photo img{height:150px}
+    .two-photos{grid-template-columns:1fr}
+    .checklist{grid-template-columns:1fr}
+    .day{padding:17px 14px}
+    .event{grid-template-columns:74px 16px 1fr;gap:8px}
+    .time{font-size:.88rem}
+  }
+  @media print{
+    body{background:white}
+    .wrap{max-width:none;padding:0}
+    .hero,.day,.mini,.place,.checklist{box-shadow:none}
+    .btn{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="kicker">FAMILY SHORT TRIP 2026</div>
+    <h1>羽生 1泊2日<br>家族旅行のしおり</h1>
+    <p>2026年10月11日（日）〜 10月12日（月・祝）</p>
+    <p>石神井公園 → 行田 → 羽生</p>
+    <div class="chips">
+      <div class="chip">🌾 田んぼアート</div>
+      <div class="chip">🎮 ポケモンフレンダ</div>
+      <div class="chip">♨️ 天然温泉</div>
+      <div class="chip">🍣 海鮮夕食</div>
+      <div class="chip">🏎️ はじめてのゴーカート</div>
+    </div>
+  </header>
+
+
+  <section class="section">
+    <h2 class="section-title"><span>📸</span>今回の旅</h2>
+    <div class="photo-grid">
+      <figure class="photo">
+        <img loading="lazy" src="https://www.city.gyoda.lg.jp/material/images/group/20/tanboart20260714.JPG" alt="2026年 行田のMinecraft田んぼアート">
+        <figcaption>2026年の行田・Minecraft田んぼアート（写真：行田市）</figcaption>
+      </figure>
+      <figure class="photo">
+        <img loading="lazy" src="https://www.inside-games.jp/imgs/zoom/1460720.png" alt="ポケモンフレンダのゲーム機">
+        <figcaption>ポケモンフレンダ（イメージ）</figcaption>
+      </figure>
+      <figure class="photo">
+        <img loading="lazy" src="https://cdn-ak.f.st-hatena.com/images/fotolife/u/ueolager/20230726/20230726100441.jpg" alt="ルートイングランティア羽生 SPA RESORT">
+        <figcaption>ルートイングランティア羽生 SPA RESORT</figcaption>
+      </figure>
+      <figure class="photo">
+        <img loading="lazy" src="https://rstatic.enjoytokyo.jp/assets/images/spot/b4/l_20005844/img_1.png?1661938260=&p=t&w=1800" alt="羽生天然温泉 華のゆ 露天風呂">
+        <figcaption>羽生天然温泉「華のゆ」露天風呂</figcaption>
+      </figure>
+      <figure class="photo">
+        <img loading="lazy" src="https://cdn-ak.f.st-hatena.com/images/fotolife/u/ueolager/20230726/20230726100322.jpg" alt="ルートイングランティア羽生の朝食イメージ">
+        <figcaption>朝食バイキングのイメージ</figcaption>
+      </figure>
+      <figure class="photo">
+        <img loading="lazy" src="https://stat.ameba.jp/user_images/20190119/15/919ms/a9/69/j/o3968297614341551371.jpg" alt="クイック羽生のキッズゴーカート">
+        <figcaption>クイック羽生のゴーカート（イメージ）</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title"><span>🧭</span>旅の方針</h2>
+    <div class="bigpoint">
+      <strong>予定を詰めすぎず、15時台にホテルへ。</strong><br>
+      1日目は「昼食・田んぼアート・フレンダ」だけ。夕方からは温泉とホテルを楽しむ。<br>
+      2日目は予約済みのゴーカートがメイン。終わったら昼食を食べて、そのまま帰宅。
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="summary-grid">
+      <div class="mini"><b>出発</b><strong>10/11 11:00ごろ</strong></div>
+      <div class="mini"><b>宿泊</b><strong>ルートイングランティア羽生</strong></div>
+      <div class="mini"><b>チェックイン目標</b><strong>15:30ごろ</strong></div>
+      <div class="mini"><b>2日目メイン</b><strong>11:00 ゴーカート教室</strong></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="day">
+      <div class="dayhead">
+        <h2>DAY 1｜10月11日（日）</h2>
+        <div class="theme">遊びは軽め、温泉はしっかり</div>
+      </div>
+
+      <div class="timeline">
+        <div class="event">
+          <div class="time">11:00</div><div class="dot"></div>
+          <div>
+            <h3>石神井公園の自宅を出発 🚗</h3>
+            <p>連休中なので、到着時間は道路状況に合わせて無理せず調整。</p>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="time">12:20頃</div><div class="dot"></div>
+          <div>
+            <h3>昼食｜ステーキ宮 行田店 🥩</h3>
+            <p>第一候補。予約なしでそのまま向かう。</p>
+            <span class="badge">第一候補</span>
+            <span class="badge orange">混雑時は即切替</span>
+            <p><b>混んでいたら：</b>同じ場所の「カルビ大将 行田店」へ。日・祝は11:00から営業。</p>
+            <figure class="event-photo">
+              <img loading="lazy" src="https://newscast.jp/attachments/XK4GI4Rw17xtKXgKpxpN.jpg" alt="ステーキ宮の店舗イメージ">
+              <figcaption>ステーキ宮（店舗イメージ）</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="time">13:30頃</div><div class="dot"></div>
+          <div>
+            <h3>古代蓮の里・行田タワー 🌾</h3>
+            <p>展望室から2026年の田んぼアートを見る。滞在は30分程度を目安に。</p>
+            <span class="badge">受付 16:00まで</span>
+            <span class="badge">営業時間 9:00〜16:30</span>
+            <figure class="event-photo">
+              <img loading="lazy" src="https://www.city.gyoda.lg.jp/material/images/group/20/tanboart20260714.JPG" alt="行田のMinecraft田んぼアート">
+              <figcaption>2026年の田んぼアートは『Minecraft』。秋は稲の色合いも変化します。</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="time">14:20頃</div><div class="dot"></div>
+          <div>
+            <h3>イオンモール羽生｜ポケモンフレンダ 🎮</h3>
+            <p>ゲームセンターで30〜40分ほど遊ぶ。ホテル到着を優先して、遊びすぎない。</p>
+            <span class="badge">モーリーファンタジー 3F</span>
+            <span class="badge">アミューズメント 10:00〜22:00</span>
+            <figure class="event-photo">
+              <img loading="lazy" src="https://www.inside-games.jp/imgs/zoom/1460720.png" alt="ポケモンフレンダ筐体">
+              <figcaption>ポケモンフレンダ（筐体イメージ）</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="time">15:20頃</div><div class="dot"></div>
+          <div>
+            <h3>イオンモール羽生を出発</h3>
+            <p>ホテルまでは近距離。15時台のチェックインを目標に。</p>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="time">15:40頃</div><div class="dot"></div>
+          <div>
+            <h3>ルートイングランティア羽生 SPA RESORT チェックイン 🏨</h3>
+            <p>荷物を置いて、まずは部屋でひと休み。館内には約13,000冊の漫画コーナーと、小さな子ども向けのキッズコーナーもあります。</p>
+            <figure class="event-photo">
+              <img loading="lazy" src="https://cdn-ak.f.st-hatena.com/images/fotolife/u/ueolager/20230726/20230726100441.jpg" alt="ルートイングランティア羽生 SPA RESORT">
+              <figcaption>ルートイングランティア羽生 SPA RESORT</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="time">16:15頃</div><div class="dot"></div>
+          <div>
+            <h3>天然温泉「華のゆ」♨️</h3>
+            <p>夕食前にゆっくり温泉。源泉かけ流しの天然温泉で、お風呂やサウナも充実。</p>
+            <figure class="event-photo">
+              <img loading="lazy" src="https://rstatic.enjoytokyo.jp/assets/images/spot/b4/l_20005844/img_1.png?1661938260=&p=t&w=1800" alt="華のゆ 露天風呂">
+              <figcaption>スーパー健康ランド「華のゆ」露天風呂</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="time">18:00頃</div><div class="dot"></div>
+          <div>
+            <h3>夕食｜海鮮ダイニング「まぐろや はなの夢」🍣</h3>
+            <p>ホテル内なので、温泉後にそのまま夕食へ。海鮮中心で、子ども向けメニューもあり。</p>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="time">夜</div><div class="dot"></div>
+          <div>
+            <h3>部屋でのんびり／もう一度温泉</h3>
+            <p>翌日のゴーカートに備えて、遅くなりすぎないように。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="note">
+        <b>時間調整ポイント：</b>昼食で待った場合は、田んぼアートを短めに。ホテル15時台到着を最優先。
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="dayhead">
+        <h2>DAY 2｜10月12日（月・祝）</h2>
+        <div class="theme">今日の主役はゴーカート！</div>
+      </div>
+
+      <div class="timeline">
+        <div class="event">
+          <div class="time">7:30頃</div><div class="dot"></div>
+          <div>
+            <h3>起床</h3>
+            <p>朝は急がず、ゆっくり準備。</p>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="time">8:00頃</div><div class="dot"></div>
+          <div>
+            <h3>ホテルで朝食バイキング 🍳</h3>
+            <p>バイキングでしっかり朝ごはん。焼きたてパンも楽しみ。ゴーカート前なので食べ過ぎには少し注意。</p>
+            <figure class="event-photo">
+              <img loading="lazy" src="https://cdn-ak.f.st-hatena.com/images/fotolife/u/ueolager/20230726/20230726100322.jpg" alt="朝食バイキングのイメージ">
+              <figcaption>朝食バイキングの一例（メニューは日によって変わります）</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="time">9:45頃</div><div class="dot"></div>
+          <div>
+            <h3>チェックアウト</h3>
+            <p>予約時間よりかなり早めにクイック羽生方面へ移動。</p>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="time">10:20頃</div><div class="dot"></div>
+          <div>
+            <h3>クイック羽生 到着 🏁</h3>
+            <p>受付・トイレ・準備を済ませる。予約時間に余裕を持って。</p>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="time">11:00</div><div class="dot"></div>
+          <div>
+            <h3>ゴーカート「はじめて体験教室」🏎️</h3>
+            <p><b>予約済み。</b>今回の旅行のメインイベント！ はじめて自分で運転する体験を楽しもう。</p>
+            <span class="badge orange">予約済み</span>
+            <figure class="event-photo">
+              <img loading="lazy" src="https://stat.ameba.jp/user_images/20190119/15/919ms/a9/69/j/o3968297614341551371.jpg" alt="クイック羽生 キッズゴーカート">
+              <figcaption>クイック羽生のゴーカート（過去のイベント写真・イメージ）</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="time">終了後</div><div class="dot"></div>
+          <div>
+            <h3>羽生周辺で昼食 🍜</h3>
+            <p>その日の気分で決める。急がず昼食を食べてから帰宅。</p>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="time">午後</div><div class="dot"></div>
+          <div>
+            <h3>石神井公園へ帰宅 🚗</h3>
+            <p>寄り道は無理に入れず、早めに帰って家でゆっくり。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title"><span>📍</span>スポット一覧</h2>
+    <div class="places">
+      <div class="place">
+        <h3>ステーキ宮 行田店</h3>
+        <p>1日目の昼食第一候補。混雑していたら無理に待たず、同じ場所の「カルビ大将 行田店」へ切り替える。</p>
+        <div class="buttons">
+          <a class="btn primary" target="_blank" href="https://www.google.com/maps/search/?api=1&query=ステーキ宮+行田店">地図を開く</a>
+        </div>
+      </div>
+<div class="place">
+        <h3>古代蓮の里・行田タワー</h3>
+        <p>埼玉県行田市大字小針2375-1。田んぼアートは展望室から見る。</p>
+        <div class="buttons">
+          <a class="btn primary" target="_blank" href="https://www.google.com/maps/search/?api=1&query=古代蓮の里+行田">地図を開く</a>
+          <a class="btn" target="_blank" href="https://www.ikiiki-zaidan.or.jp/kodaihasu/">公式</a>
+        </div>
+      </div>
+      <div class="place">
+        <h3>イオンモール羽生</h3>
+        <p>埼玉県羽生市川崎2-281-3。3Fモーリーファンタジーでポケモンフレンダ。</p>
+        <div class="buttons">
+          <a class="btn primary" target="_blank" href="https://www.google.com/maps/search/?api=1&query=イオンモール羽生">地図を開く</a>
+          <a class="btn" target="_blank" href="https://hanyu.aeonmall.jp/">公式</a>
+        </div>
+      </div>
+      <div class="place">
+        <h3>ルートイングランティア羽生 SPA RESORT</h3>
+        <p>埼玉県羽生市西3丁目19-3。天然温泉「華のゆ」と海鮮ダイニング「まぐろや はなの夢」。</p>
+        <div class="buttons">
+          <a class="btn primary" target="_blank" href="https://www.google.com/maps/search/?api=1&query=ルートイングランティア羽生SPA+RESORT">地図を開く</a>
+          <a class="btn" target="_blank" href="https://hotel-grantia.co.jp/hanyu/">公式</a>
+        </div>
+      </div>
+      <div class="place">
+        <h3>クイック羽生</h3>
+        <p>埼玉県羽生市桑崎275-1。11:00から「ゴーカートはじめて体験教室」を予約済み。</p>
+        <div class="buttons">
+          <a class="btn primary" target="_blank" href="https://www.google.com/maps/search/?api=1&query=クイック羽生">地図を開く</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title"><span>🎒</span>持ち物メモ</h2>
+    <div class="checklist">
+      <label><input type="checkbox">ゴーカート予約内容が分かるもの</label>
+      <label><input type="checkbox">着替え・下着</label>
+      <label><input type="checkbox">子どもの運動しやすい靴</label>
+      <label><input type="checkbox">飲み物</label>
+      <label><input type="checkbox">ポケモンフレンダ関連カード／ピック</label>
+      <label><input type="checkbox">充電器・モバイルバッテリー</label>
+      <label><input type="checkbox">保険証・医療証など</label>
+      <label><input type="checkbox">10月用の羽織りもの</label>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title"><span>💡</span>当日のポイント</h2>
+    <div class="bigpoint">
+      <b>① 昼食は待ちすぎない。</b> ステーキ宮が混んでいたらカルビ大将へ。<br>
+      <b>② 田んぼアートは30分程度。</b> 行田タワーの受付は16:00までだが、今回はホテル到着優先。<br>
+      <b>③ フレンダは30〜40分。</b> 「もう少し遊びたい」は次回に回して、15時台のチェックインを守る。<br>
+      <b>④ 2日目はゴーカート一本。</b> 終了後は昼食だけ食べて帰宅。予定を増やさない。
+    </div>
+  </section>
+
+  <footer class="footer">
+    ※時間は道路状況・混雑により前後します。営業時間等は2026年10月3日時点の公式情報をもとに記載。<br>
+    FAMILY TRIP｜2026.10.11-12
+  </footer>
+</div>
+</body>
+</html>
